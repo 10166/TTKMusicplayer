@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
-SUBDIRS += Input \
+SUBDIRS += Effect \
+           Input \
            Output \
            Visual
 
