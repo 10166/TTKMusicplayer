@@ -7,19 +7,19 @@
     <settings>
         <enhancedMusic value="0"/>
         <language value="0"/>
-        <autoPlay value="false"/>
-        <closeEvent value="true"/>
+        <autoPlay value="0"/>
+        <closeEvent value="1"/>
         <lastPlayIndex value="1">0,-1</lastPlayIndex>
         <closeNetwork value="0"/>
         <fileAssociation value="0"/>
     </settings>
     <backgroundSkin>
-        <bgTheme value="theme21"/>
+        <bgTheme value="theme-21"/>
         <bgTransparent value="99"/>
         <bgListTransparent value="49"/>
     </backgroundSkin>
     <inlineLrc>
-        <showInlineLrc value="true"/>
+        <showInlineLrc value="1"/>
         <lrcColor value="8"/>
         <lrcSize value="17"/>
         <lrcFamily value="0"/>
@@ -29,7 +29,7 @@
         <lrcBgColor value="255,255,255"/>
     </inlineLrc>
     <desktopLrc>
-        <showDesktopLrc value="false"/>
+        <showDesktopLrc value="0"/>
         <lrcDColor value="8"/>
         <lrcDSize value="36"/>
         <lrcDFamily value="0"/>
@@ -38,7 +38,7 @@
         <lrcDFgColor value="255,191,62"/>
         <lrcDBgColor value="76,255,91"/>
         <lrcDLocked value="0"/>
-        <lrcDGeometry value="180,434,1066,200"/>
+        <lrcDGeometry value="180,434"/>
     </desktopLrc>
     <equalizer>
         <equalizerEnale value="0"/>
