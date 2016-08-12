@@ -13,12 +13,13 @@ The TTKMusicplayer plugin for run
  * |__Music
  * |__MPlugins
  * |__plugins
+ * |¡ª¡ªprojectM
  * |
  * |music.dll
- * |music_1.dll
- * |music_2.dll
- * |musicbarrage
+ * |musicbarrage.ttk
  * |musicconfig.xml
- * |musicuser_1.dll
- * |musicuser_2.dll
+ * |musichistory.ttk
+ * |musicradio.dll
+ * |musicuser.dll
+ * |musicuser.ttk
  * |sound.wav
