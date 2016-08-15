@@ -13,7 +13,7 @@ The TTKMusicplayer plugin for run
  * |__Music
  * |__MPlugins
  * |__plugins
- * |¡ª¡ªprojectM
+ * |__projectM
  * |
  * |music.dll
  * |musicbarrage.ttk
@@ -22,4 +22,5 @@ The TTKMusicplayer plugin for run
  * |musicradio.dll
  * |musicuser.dll
  * |musicuser.ttk
+ * |musicdown.ttk
  * |sound.wav
