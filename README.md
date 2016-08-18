@@ -19,7 +19,7 @@ The TTKMusicplayer plugin for run
   * |__MLrc
   * |__Movie
   * |__Music
-* |__µ±Ç°°æ±¾ºÅ
+* |__å½“å‰ç‰ˆæœ¬å·
   * |__MLanguage
   * |__MTheme
   * |__MPlugins
