@@ -4,23 +4,25 @@ The TTKMusicplayer plugin for run
 ## Details on folders
 
 * __
- * |__MArt
- * |__MCached
- * |__MLanguage
- * |__MLrc
- * |__Movie
- * |__MTheme
- * |__Music
- * |__MPlugins
- * |__plugins
- * |__projectM
- * |
- * |music.dll
- * |musicbarrage.ttk
- * |musicconfig.xml
- * |musichistory.ttk
- * |musicradio.dll
- * |musicuser.dll
- * |musicuser.ttk
- * |musicdown.ttk
- * |sound.wav
+* |__AppData
+  * |music.dll
+  * |musicbarrage.ttk
+  * |musicconfig.xml
+  * |musichistory.ttk
+  * |musicradio.dll
+  * |musicuser.dll
+  * |musicuser.ttk
+  * |musicdown.ttk
+* |__Downloads
+  * |__MArt
+  * |__MCached
+  * |__MLrc
+  * |__Movie
+  * |__Music
+* |__µ±Ç°°æ±¾ºÅ
+  * |__MLanguage
+  * |__MTheme
+  * |__MPlugins
+  * |__plugins
+  * |__projectM
+  * |sound.wav
