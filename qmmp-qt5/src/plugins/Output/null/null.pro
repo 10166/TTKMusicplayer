@@ -10,7 +10,7 @@ SOURCES += outputnullfactory.cpp \
 TARGET=$$PLUGINS_PREFIX/Output/null
 
 INCLUDEPATH += ../../../
-QMAKE_LIBDIR += ../../../../lib
+QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
 
 CONFIG += warn_on \
 thread \
@@ -21,10 +21,7 @@ TEMPLATE = lib
 
 
 unix {
-    isEmpty (LIB_DIR){
-    LIB_DIR = /lib
-    }
-
+   isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     target.path = $$LIB_DIR/qmmp/Output
     INSTALLS += target
     LIBS += -lqmmp
@@ -33,5 +30,5 @@ unix {
 
 win32 {
     LIBS += -lqmmp1
-    QMAKE_LIBDIR += ../../../../bin
+    QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
 }

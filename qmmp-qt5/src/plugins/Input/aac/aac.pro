@@ -23,7 +23,7 @@ win32:{
     msvc:{
         HEADERS += ../../../../src/qmmp/metadatamodel.h
     }
-    QMAKE_LIBDIR += ../../../../bin
+    QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
     gcc{
       LIBS += -L$$EXTRA_PREFIX/libfaad2/lib -lfaad \
               -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll -lqmmp1
@@ -34,11 +34,11 @@ win32:{
     }
 }
 unix:{
-    QMAKE_LIBDIR += ../../../../lib
+    QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libfaad2/lib -lfaad \
             -L$$EXTRA_PREFIX/libtaglib/lib -ltag -lqmmp
 }
 
-isEmpty(LIB_DIR):LIB_DIR = /lib
+isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
 target.path = $$LIB_DIR/qmmp/Input
 INSTALLS += target

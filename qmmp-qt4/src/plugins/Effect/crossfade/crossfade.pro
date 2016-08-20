@@ -15,14 +15,12 @@ CONFIG += warn_on \
 plugin
 
 TEMPLATE = lib
-QMAKE_LIBDIR += ../../../../lib
+QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
 
 FORMS += settingsdialog.ui
 
 unix {
-    isEmpty(LIB_DIR){
-        LIB_DIR = /lib
-    }
+    isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     target.path = $$LIB_DIR/qmmp/Effect
     INSTALLS += target
 
@@ -31,7 +29,7 @@ unix {
 }
 
 win32 {
-    QMAKE_LIBDIR += ../../../../bin
+    QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
     LIBS += -lqmmp0
 }
 

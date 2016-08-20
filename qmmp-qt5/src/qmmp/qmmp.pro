@@ -79,8 +79,8 @@ SOURCES += recycler.cpp \
 
 
 FORMS +=
-unix:TARGET = ../../lib/qmmp
-win32:TARGET = ../../../bin/qmmp
+unix:TARGET = ../../lib/$$TTKMusicPlayer/qmmp
+win32:TARGET = ../../../bin/$$TTKMusicPlayer/qmmp
 CONFIG += shared \
     warn_on \
     qt \
@@ -89,7 +89,7 @@ TEMPLATE = lib
 VERSION = $$QMMP_VERSION
 
 unix {
-  isEmpty(LIB_DIR):LIB_DIR = /lib
+  isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
   DEFINES += LIB_DIR=\\\"$$LIB_DIR\\\"
   SVN_REVISION = $$system(./svn_revision.sh)
   !isEmpty(SVN_REVISION) {

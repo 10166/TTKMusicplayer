@@ -24,12 +24,12 @@ CONFIG += warn_on \
     plugin
 TEMPLATE = lib
 unix{
-   QMAKE_LIBDIR += ../../../../lib
+   QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
    LIBS += -L$$EXTRA_PREFIX/libenca/lib -lenca -lqmmp
 }
 
 win32{
-   QMAKE_LIBDIR += ../../../../bin
+   QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
    LIBS += -lqmmp0
 }
 
@@ -46,7 +46,7 @@ contains(CONFIG, WITH_ENCA){
 
 
 unix {
-    isEmpty(LIB_DIR):LIB_DIR = /lib
+    isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
 }

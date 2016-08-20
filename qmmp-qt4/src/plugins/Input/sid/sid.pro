@@ -22,17 +22,17 @@ CONFIG += warn_on \
 TEMPLATE = lib
 
 unix{
-    isEmpty (LIB_DIR):LIB_DIR = /lib
+    isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
-    QMAKE_LIBDIR += ../../../../lib
+    QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp -lqmmp
 }
 
 win32 {
     HEADERS += ../../../../src/qmmp/metadatamodel.h \
                ../../../../src/qmmp/decoderfactory.h
-    QMAKE_LIBDIR += ../../../../bin
+    QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
     gcc{
         LIBS += -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp -lqmmp0
     }

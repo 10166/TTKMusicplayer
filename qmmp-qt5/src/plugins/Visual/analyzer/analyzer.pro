@@ -25,16 +25,14 @@ TEMPLATE = lib
 win32:{
     HEADERS += ../../../../src/qmmp/visual.h
     INCLUDEPATH += ./
-    QMAKE_LIBDIR += ../../../../bin
+    QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
     LIBS += -lqmmp1
 }
 
 unix{
-    isEmpty(LIB_DIR){
-        LIB_DIR = /lib
-    }
+    isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     target.path = $$LIB_DIR/qmmp/Visual
     INSTALLS += target
-    QMAKE_LIBDIR += ../../../../lib
+    QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     LIBS += -lqmmp -L/usr/lib -I/usr/include
 }

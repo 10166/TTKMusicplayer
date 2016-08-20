@@ -1,13 +1,15 @@
 include(../../plugins.pri)
-FORMS +=
+
 HEADERS += decoderaacfactory.h \
     decoder_aac.h \
     aacfile.h \
     aacmetadatamodel.h
+
 SOURCES += decoder_aac.cpp \
     decoderaacfactory.cpp \
     aacfile.cpp \
     aacmetadatamodel.cpp
+
 TARGET = $$PLUGINS_PREFIX/Input/aac
 QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libaac.so
 
@@ -20,7 +22,7 @@ CONFIG += warn_on \
 TEMPLATE = lib
 
 win32:{
-  QMAKE_LIBDIR += ../../../../bin
+  QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
   gcc{
       LIBS += -L$$EXTRA_PREFIX/libfaad2/lib -lfaad \
               -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll \
@@ -28,12 +30,12 @@ win32:{
   }
 }
 unix:{
-    QMAKE_LIBDIR += ../../../../lib
+    QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libfaad2/lib -lfaad \
           -L$$EXTRA_PREFIX/libtaglib/lib -ltag \
           -lqmmp
 }
 
-isEmpty(LIB_DIR):LIB_DIR = /lib
+isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
 target.path = $$LIB_DIR/qmmp/Input
 INSTALLS += target

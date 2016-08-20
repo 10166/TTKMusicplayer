@@ -1,15 +1,17 @@
 include(../../plugins.pri)
-FORMS +=
+
 HEADERS += decoderflacfactory.h \
     decoder_flac.h \
     cueparser.h \
     flacmetadatamodel.h \
     replaygainreader.h
+
 SOURCES += decoder_flac.cpp \
     decoderflacfactory.cpp \
     cueparser.cpp \
     flacmetadatamodel.cpp \
     replaygainreader.cpp
+
 TARGET = $$PLUGINS_PREFIX/Input/flac
 
 INCLUDEPATH += ../../../ \
@@ -20,11 +22,11 @@ CONFIG += warn_on \
     plugin \
     link_pkgconfig
 TEMPLATE = lib
-QMAKE_LIBDIR += ../../../../lib
+QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
 
 
 unix {
-    isEmpty(LIB_DIR):LIB_DIR = /lib
+    isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
     LIBS += -L$$EXTRA_PREFIX/libflac/lib -lFLAC \
@@ -41,7 +43,7 @@ win32 {
                    ../../../../src/qmmp/statehandler.h \
                    ../../../../src/qmmp/abstractengine.h
     }
-    QMAKE_LIBDIR += ../../../../bin
+    QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
 
     gcc{
         LIBS += -L$$EXTRA_PREFIX/libflac/lib -llibFLAC \

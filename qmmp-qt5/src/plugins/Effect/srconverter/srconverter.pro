@@ -16,13 +16,11 @@ plugin \
 link_pkgconfig
 
 TEMPLATE = lib
-QMAKE_LIBDIR += ../../../../lib
+QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
 INCLUDEPATH += $$EXTRA_PREFIX/libsamplerate/include
 LIBS += -L$$EXTRA_PREFIX/libsamplerate/lib -lsamplerate -lqmmp
 
-isEmpty(LIB_DIR){
-    LIB_DIR = /lib
-}
+isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
 target.path = $$LIB_DIR/qmmp/Effect
 INSTALLS += target
 

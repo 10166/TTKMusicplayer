@@ -12,7 +12,7 @@ HEADERS += ../../../../src/qmmp/output.h
 TARGET=$$PLUGINS_PREFIX/Output/directsound
 
 INCLUDEPATH += ../../../
-QMAKE_LIBDIR += ../../../../bin
+QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
 
 CONFIG += warn_on \
 thread \
@@ -21,11 +21,6 @@ plugin
 TEMPLATE = lib
 LIBS += -lqmmp0 -ldxguid -lstrmiids -ldmoguids -lmsdmo -lole32 -loleaut32 -luuid -lgdi32 -ldsound
 
-
-
-isEmpty (LIB_DIR){
-LIB_DIR = /lib
-}
-
+isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
 target.path = $$LIB_DIR/qmmp/Output
 INSTALLS += target
