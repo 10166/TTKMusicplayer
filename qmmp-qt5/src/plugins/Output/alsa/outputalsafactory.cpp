@@ -18,8 +18,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QTranslator>
-#include <QMessageBox>
 #include <qmmp/qmmp.h>
 #include "outputalsa.h"
 #include "outputalsafactory.h"

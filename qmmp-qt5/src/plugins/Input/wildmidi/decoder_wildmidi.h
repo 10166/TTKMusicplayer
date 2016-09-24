@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2012 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -36,7 +36,7 @@ public:
     bool initialize();
     qint64 totalTime();
     int bitrate();
-    qint64 read(char *data, qint64 size);
+    qint64 read(unsigned char *data, qint64 size);
     void seek(qint64);
 
 private:

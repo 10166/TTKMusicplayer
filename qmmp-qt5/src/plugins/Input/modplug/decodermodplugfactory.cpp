@@ -20,8 +20,6 @@
 
 #include <QSettings>
 #include <QFile>
-#include <QTranslator>
-#include <QMessageBox>
 #include <QStringList>
 #include <QRegExp>
 #include <libmodplug/stdafx.h>

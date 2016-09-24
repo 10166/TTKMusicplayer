@@ -27,6 +27,7 @@
 #include <qmmp/output.h>
 #include <qmmp/outputfactory.h>
 
+
 class OutputWaveOutFactory : public QObject, OutputFactory
 {
 Q_OBJECT

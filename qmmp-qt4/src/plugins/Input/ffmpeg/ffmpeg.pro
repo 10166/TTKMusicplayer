@@ -1,22 +1,22 @@
 include(../../plugins.pri)
 
-
 HEADERS += decoderffmpegfactory.h \
-    decoder_ffmpeg.h \
-    ffmpegmetadatamodel.h
-
-
+           decoder_ffmpeg.h \
+           ffmpegmetadatamodel.h \
+           replaygainreader.h
+    
 SOURCES += decoder_ffmpeg.cpp \
-    decoderffmpegfactory.cpp \
-    ffmpegmetadatamodel.cpp
-
+           decoderffmpegfactory.cpp \
+           ffmpegmetadatamodel.cpp \
+           replaygainreader.cpp
 
 INCLUDEPATH += ../../../ \
-                $$EXTRA_PREFIX/libav/include
+               $$EXTRA_PREFIX/libav/include
 
 CONFIG += warn_on \
-    plugin \
-    link_pkgconfig
+          plugin \
+          link_pkgconfig
+          
 TEMPLATE = lib
 
 TARGET = $$PLUGINS_PREFIX/Input/ffmpeg
@@ -34,13 +34,8 @@ win32 {
     HEADERS += ../../../../src/qmmp/metadatamodel.h \
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
-    gcc{
-        LIBS += -L$$EXTRA_PREFIX/libav/lib -lavcodec.dll -lavformat.dll -lavutil.dll \
-                -lqmmp0
-    }
-#    LIBS += -lqmmp0 -lavcodec.dll -lavformat.dll -lavutil.dll
+    LIBS += -L$$EXTRA_PREFIX/libav/lib -lavcodec.dll -lavformat.dll -lavutil.dll \
+            -lqmmp0
 }
 
 DEFINES += __STDC_CONSTANT_MACROS
-
-

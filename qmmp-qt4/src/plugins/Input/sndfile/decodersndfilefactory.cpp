@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2007-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#include <QtGui>
 #include <QRegExp>
-extern "C"
-{
+#include <QtPlugin>
+#ifdef Q_OS_WIN
+#include <windows.h>
+#define ENABLE_SNDFILE_WINDOWS_PROTOTYPES 1
+#endif
 #include <sndfile.h>
-}
-
 #include "decoder_sndfile.h"
 #include "decodersndfilefactory.h"
 
@@ -32,13 +32,18 @@ extern "C"
 
 bool DecoderSndFileFactory::supports(const QString &source) const
 {
-    if (source.right(4).toLower() == ".wav")
+    if (source.endsWith(".wav", Qt::CaseInsensitive))
     {
         //try top open the file
         SF_INFO snd_info;
-        SNDFILE *sndfile = sf_open(source.toLocal8Bit(), SFM_READ, &snd_info);
+#ifdef Q_OS_WIN
+        SNDFILE *sndfile = sf_wchar_open(reinterpret_cast<LPCWSTR>(source.utf16()), SFM_READ, &snd_info);
+#else
+        SNDFILE *sndfile = sf_open(source.toLocal8Bit().constData(), SFM_READ, &snd_info);
+#endif
         if (!sndfile)
             return false;
+
         sf_close (sndfile);
         sndfile = 0;
         return true;
@@ -85,7 +90,11 @@ QList<FileInfo *> DecoderSndFileFactory::createPlayList(const QString &fileName,
     SNDFILE *sndfile = 0;
     memset (&snd_info, 0, sizeof(snd_info));
     snd_info.format = 0;
-    sndfile = sf_open(fileName.toLocal8Bit(), SFM_READ, &snd_info);
+#ifdef Q_OS_WIN
+        sndfile = sf_wchar_open(reinterpret_cast<LPCWSTR>(fileName.utf16()), SFM_READ, &snd_info);
+#else
+        sndfile = sf_open(fileName.toLocal8Bit().constData(), SFM_READ, &snd_info);
+#endif
     if (!sndfile)
         return list;
 
@@ -119,6 +128,5 @@ MetaDataModel* DecoderSndFileFactory::createMetaDataModel(const QString&, QObjec
 {
     return 0;
 }
-
 
 Q_EXPORT_PLUGIN2(sndfile, DecoderSndFileFactory)

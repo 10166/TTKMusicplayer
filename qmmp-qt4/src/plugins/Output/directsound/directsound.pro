@@ -15,11 +15,11 @@ INCLUDEPATH += ../../../
 QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
 
 CONFIG += warn_on \
-thread \
-plugin
+          thread \
+          plugin
 
 TEMPLATE = lib
-LIBS += -lqmmp0 -ldxguid -lstrmiids -ldmoguids -lmsdmo -lole32 -loleaut32 -luuid -lgdi32 -ldsound
+LIBS += -lqmmp0 -ldxguid -lstrmiids -ldmoguids -lmsdmo -lole32 -loleaut32 -luuid -lgdi32 -ldsound -lksuser
 
 isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
 target.path = $$LIB_DIR/qmmp/Output

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010-2014 by Ilya Kotov                                 *
+ *   Copyright (C) 2016 by Ilya Kotov                                      *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,24 +18,38 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef AUDIOCONVERTER_P_H
-#define AUDIOCONVERTER_P_H
+#include <QSettings>
+#include <soxr.h>
+#include <qmmp/qmmp.h>
+#include "settingsdialog.h"
 
-#include "effect.h"
-
-/*! @internal
- * @author Ilya Kotov <forkotov02@hotmail.ru>
- */
-class AudioConverter : public Effect
+SettingsDialog::SettingsDialog(QWidget *parent)
+ : QDialog(parent)
 {
-public:
-    AudioConverter();
-    void configure(quint32 srate, ChannelMap map, Qmmp::AudioFormat f = Qmmp::PCM_S16LE);
-    void applyEffect(Buffer *b);
+    m_ui.setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose, true);
+    QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
+    m_ui.srSpinBox->setValue(settings.value("SOXR/sample_rate",48000).toInt());
 
-private:
-    Qmmp::AudioFormat m_format;
+    m_ui.qualityComboBox->addItem(tr("Quick"), SOXR_QQ);
+    m_ui.qualityComboBox->addItem(tr("Low"), SOXR_LQ);
+    m_ui.qualityComboBox->addItem(tr("Medium"), SOXR_MQ);
+    m_ui.qualityComboBox->addItem(tr("High"), SOXR_HQ);
+    m_ui.qualityComboBox->addItem(tr("Very High"), SOXR_VHQ);
+    int index = m_ui.qualityComboBox->findData(settings.value("SOXR/quality", SOXR_HQ).toInt());
+    if(index >= 0 && index < m_ui.qualityComboBox->count())
+        m_ui.qualityComboBox->setCurrentIndex(index);
+}
 
-};
 
-#endif // AUDIOCONVERTER_P_H
+SettingsDialog::~SettingsDialog()
+{
+}
+
+void SettingsDialog::accept()
+{
+    QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
+    settings.setValue("SOXR/sample_rate",m_ui.srSpinBox->value());
+    settings.setValue("SOXR/quality", m_ui.qualityComboBox->itemData(m_ui.qualityComboBox->currentIndex()).toInt());
+    QDialog::accept();
+}

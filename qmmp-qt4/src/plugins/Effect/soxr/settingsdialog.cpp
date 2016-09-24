@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007-2013 by Ilya Kotov                                 *
+ *   Copyright (C) 2016 by Ilya Kotov                                      *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,25 +19,28 @@
  ***************************************************************************/
 
 #include <QSettings>
-#include <QSize>
+#include <soxr.h>
 #include <qmmp/qmmp.h>
 #include "settingsdialog.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
+SettingsDialog::SettingsDialog(QWidget *parent)
+ : QDialog(parent)
 {
     m_ui.setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose, true);
     QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
-    settings.beginGroup("Analyzer");
-    m_ui.colorWidget1->setColor(settings.value("color1", "Green").toString());
-    m_ui.colorWidget2->setColor(settings.value("color2", "Yellow").toString());
-    m_ui.colorWidget3->setColor(settings.value("color3", "Red").toString());
-    m_ui.bgColorWidget->setColor(settings.value("bg_color", "Black").toString());
-    m_ui.peakColorWidget->setColor(settings.value("peak_color", "Cyan").toString());
-    QSize cells_size = settings.value("cells_size", QSize(15, 6)).toSize();
-    m_ui.cellWidthSpinBox->setValue(cells_size.width());
-    m_ui.cellHeightSpinBox->setValue(cells_size.height());
-    settings.endGroup();
+    m_ui.srSpinBox->setValue(settings.value("SOXR/sample_rate",48000).toInt());
+
+    m_ui.qualityComboBox->addItem(tr("Quick"), SOXR_QQ);
+    m_ui.qualityComboBox->addItem(tr("Low"), SOXR_LQ);
+    m_ui.qualityComboBox->addItem(tr("Medium"), SOXR_MQ);
+    m_ui.qualityComboBox->addItem(tr("High"), SOXR_HQ);
+    m_ui.qualityComboBox->addItem(tr("Very High"), SOXR_VHQ);
+    int index = m_ui.qualityComboBox->findData(settings.value("SOXR/quality", SOXR_HQ).toInt());
+    if(index >= 0 && index < m_ui.qualityComboBox->count())
+        m_ui.qualityComboBox->setCurrentIndex(index);
 }
+
 
 SettingsDialog::~SettingsDialog()
 {
@@ -46,14 +49,7 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::accept()
 {
     QSettings settings(Qmmp::configFile(), QSettings::IniFormat);
-    settings.beginGroup("Analyzer");
-    settings.setValue("color1", m_ui.colorWidget1->colorName());
-    settings.setValue("color2", m_ui.colorWidget2->colorName());
-    settings.setValue("color3", m_ui.colorWidget3->colorName());
-    settings.setValue("bg_color", m_ui.bgColorWidget->colorName());
-    settings.setValue("peak_color", m_ui.peakColorWidget->colorName());
-    settings.setValue("cells_size", QSize(m_ui.cellWidthSpinBox->value(),
-                                                   m_ui.cellHeightSpinBox->value()));
-    settings.endGroup();
+    settings.setValue("SOXR/sample_rate",m_ui.srSpinBox->value());
+    settings.setValue("SOXR/quality", m_ui.qualityComboBox->itemData(m_ui.qualityComboBox->currentIndex()).toInt());
     QDialog::accept();
 }

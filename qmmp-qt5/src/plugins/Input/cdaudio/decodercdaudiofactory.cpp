@@ -18,11 +18,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QTranslator>
-#include <QMessageBox>
 #include <QRegExp>
 #include <cdio/version.h>
 #include <cddb/version.h>
+#include "settingsdialog.h"
 #include "decoder_cdaudio.h"
 #include "decodercdaudiofactory.h"
 

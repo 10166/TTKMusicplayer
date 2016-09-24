@@ -18,8 +18,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QTranslator>
-#include <QMessageBox>
 #include <QRegExp>
 #include "gmehelper.h"
 #include "decoder_gme.h"

@@ -1,5 +1,4 @@
 #Common settings for Qmmp build
-CONFIG += gcc
 
 #Some conf to redirect intermediate stuff in separate dirs
 UI_DIR=./.build/ui/
@@ -10,7 +9,7 @@ RCC_DIR=./.build/rcc
 #Version
 
 TTKMusicPlayer = 2.4.0.0
-QMMP_VERSION = 0.9.6
+QMMP_VERSION = 0.10.3
 
 #Comment/uncomment this if you want to change plugins list
 
@@ -30,12 +29,14 @@ CONFIG += AAC_PLUGIN
 CONFIG += MPLAYER_PLUGIN
 CONFIG += CDAUDIO_PLUGIN
 CONFIG += BS2B_PLUGIN
+CONFIG += SOXR_PLUGIN
 CONFIG += LADSPA_PLUGIN
 CONFIG += PROJECTM_PLUGIN
 CONFIG += UDISKS_PLUGIN #deprecated
 CONFIG += UDISKS2_PLUGIN
 CONFIG += HAL_PLUGIN
 CONFIG += SID_PLUGIN
+CONFIG += QTMULTIMEDIA_PLUGIN
 
 #additional features
 

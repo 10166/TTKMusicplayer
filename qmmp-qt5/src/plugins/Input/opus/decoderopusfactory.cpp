@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2013-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,16 +18,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QTranslator>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
-//#include <taglib/opusfile.h>
+#include <taglib/opusfile.h>
 #include "replaygainreader.h"
 #include "decoder_opus.h"
 #include "opusmetadatamodel.h"
 #include "decoderopusfactory.h"
-
 
 // DecoderOpusFactory
 bool DecoderOpusFactory::supports(const QString &source) const
@@ -76,45 +73,45 @@ MetaDataModel* DecoderOpusFactory::createMetaDataModel(const QString &path, QObj
 
 QList<FileInfo *> DecoderOpusFactory::createPlayList(const QString &fileName, bool useMetaData, QStringList *)
 {
-//    FileInfo *info = new FileInfo(fileName);
+    FileInfo *info = new FileInfo(fileName);
 
-//    TagLib::Ogg::Opus::File fileRef(fileName.toLocal8Bit().constData());
-//    TagLib::Ogg::XiphComment *tag = useMetaData ? fileRef.tag() : 0;
+    TagLib::Ogg::Opus::File fileRef(QStringToFileName(fileName));
+    TagLib::Ogg::XiphComment *tag = useMetaData ? fileRef.tag() : 0;
 
-//    if (tag && !tag->isEmpty())
-//    {
-//        info->setMetaData(Qmmp::ALBUM,
-//                          QString::fromUtf8(tag->album().toCString(true)).trimmed());
-//        info->setMetaData(Qmmp::ARTIST,
-//                          QString::fromUtf8(tag->artist().toCString(true)).trimmed());
-//        info->setMetaData(Qmmp::COMMENT,
-//                          QString::fromUtf8(tag->comment().toCString(true)).trimmed());
-//        info->setMetaData(Qmmp::GENRE,
-//                          QString::fromUtf8(tag->genre().toCString(true)).trimmed());
-//        info->setMetaData(Qmmp::TITLE,
-//                          QString::fromUtf8(tag->title().toCString(true)).trimmed());
-//        info->setMetaData(Qmmp::YEAR, tag->year());
-//        info->setMetaData(Qmmp::TRACK, tag->track());
-//    }
+    if (tag && !tag->isEmpty())
+    {
+        info->setMetaData(Qmmp::ALBUM,
+                          QString::fromUtf8(tag->album().toCString(true)).trimmed());
+        info->setMetaData(Qmmp::ARTIST,
+                          QString::fromUtf8(tag->artist().toCString(true)).trimmed());
+        info->setMetaData(Qmmp::COMMENT,
+                          QString::fromUtf8(tag->comment().toCString(true)).trimmed());
+        info->setMetaData(Qmmp::GENRE,
+                          QString::fromUtf8(tag->genre().toCString(true)).trimmed());
+        info->setMetaData(Qmmp::TITLE,
+                          QString::fromUtf8(tag->title().toCString(true)).trimmed());
+        info->setMetaData(Qmmp::YEAR, tag->year());
+        info->setMetaData(Qmmp::TRACK, tag->track());
+    }
 
-//    if (fileRef.audioProperties())
-//        info->setLength(fileRef.audioProperties()->length());
-//    //additional metadata
-//    if(tag)
-//    {
-//        TagLib::StringList fld;
-//        if(!(fld = tag->fieldListMap()["ALBUMARTIST"]).isEmpty())
-//            info->setMetaData(Qmmp::ALBUMARTIST,
-//                              QString::fromUtf8(fld.front().toCString(true)).trimmed());
-//        if(!(fld = tag->fieldListMap()["COMPOSER"]).isEmpty())
-//            info->setMetaData(Qmmp::COMPOSER,
-//                              QString::fromUtf8(fld.front().toCString(true)).trimmed());
-//        if(!(fld = tag->fieldListMap()["DISCNUMBER"]).isEmpty())
-//            info->setMetaData(Qmmp::DISCNUMBER,
-//                              QString::fromUtf8(fld.front().toCString(true)).trimmed());
-//    }
+    if (fileRef.audioProperties())
+        info->setLength(fileRef.audioProperties()->length());
+    //additional metadata
+    if(tag)
+    {
+        TagLib::StringList fld;
+        if(!(fld = tag->fieldListMap()["ALBUMARTIST"]).isEmpty())
+            info->setMetaData(Qmmp::ALBUMARTIST,
+                              QString::fromUtf8(fld.front().toCString(true)).trimmed());
+        if(!(fld = tag->fieldListMap()["COMPOSER"]).isEmpty())
+            info->setMetaData(Qmmp::COMPOSER,
+                              QString::fromUtf8(fld.front().toCString(true)).trimmed());
+        if(!(fld = tag->fieldListMap()["DISCNUMBER"]).isEmpty())
+            info->setMetaData(Qmmp::DISCNUMBER,
+                              QString::fromUtf8(fld.front().toCString(true)).trimmed());
+    }
 
     QList <FileInfo*> list;
-//    list << info;
+    list << info;
     return list;
 }

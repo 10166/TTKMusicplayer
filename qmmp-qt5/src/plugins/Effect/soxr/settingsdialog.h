@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2010-2014 by Ilya Kotov                                 *
+ *   Copyright (C) 2016 by Ilya Kotov                                      *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,25 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
+#ifndef SETTINGSDIALOG_H
+#define SETTINGSDIALOG_H
 
-#ifndef AUDIOCONVERTER_P_H
-#define AUDIOCONVERTER_P_H
+#include <QDialog>
+#include "ui_settingsdialog.h"
 
-#include "effect.h"
-
-/*! @internal
- * @author Ilya Kotov <forkotov02@hotmail.ru>
- */
-class Q_DECL_EXPORT AudioConverter : public Effect
+/**
+    @author Ilya Kotov <forkotov02@hotmail.ru>
+*/
+class SettingsDialog : public QDialog
 {
+Q_OBJECT
 public:
-    AudioConverter();
-    void configure(quint32 srate, ChannelMap map, Qmmp::AudioFormat f = Qmmp::PCM_S16LE);
-    void applyEffect(Buffer *b);
+    SettingsDialog(QWidget *parent = 0);
+
+    ~SettingsDialog();
+
+public slots:
+    virtual void accept();
 
 private:
-    Qmmp::AudioFormat m_format;
+    Ui::SettingsDialog m_ui;
 
 };
 
-#endif // AUDIOCONVERTER_P_H
+#endif

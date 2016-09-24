@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <QObject>
-#include <QThread>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
@@ -156,7 +156,7 @@ qint64 OutputWaveOut::writeAudio(unsigned char *data, qint64 len)
 
     if (ScheduledBlocks >= sizeof(PlayedWaveHeaders)/sizeof(*PlayedWaveHeaders)) // wait for a free block ...
     {
-        QThread::usleep(50000);
+        usleep(50000);
         return 0;
     }
 

@@ -15,8 +15,8 @@ INCLUDEPATH += ../../../
 QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
 
 CONFIG += warn_on \
-thread \
-plugin
+          thread \
+          plugin
 
 TEMPLATE = lib
 LIBS += -lqmmp0 -lwinmm

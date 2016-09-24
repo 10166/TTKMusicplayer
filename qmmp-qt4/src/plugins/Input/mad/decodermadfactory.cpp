@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,10 +18,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
 #include <QDialog>
-#include <QMessageBox>
 #include <QFile>
+#include <QTextCodec>
+#include <QSettings>
+#include <QtPlugin>
 #include <mad.h>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
@@ -116,7 +117,7 @@ Decoder *DecoderMADFactory::create(const QString &url, QIODevice *input)
     if(!url.contains("://")) //local file
     {
         ReplayGainReader rg(url);
-        d->setReplayGainInfo(rg.replayGainInfo(), true);
+        d->setReplayGainInfo(rg.replayGainInfo());
     }
     return d;
 }
@@ -127,10 +128,10 @@ QList<FileInfo *> DecoderMADFactory::createPlayList(const QString &fileName, boo
     TagLib::Tag *tag = 0;
 
 #if (TAGLIB_MAJOR_VERSION > 1) || ((TAGLIB_MAJOR_VERSION == 1) && (TAGLIB_MINOR_VERSION >= 8))
-    TagLib::FileStream stream(fileName.toLocal8Bit().constData(), true);
+    TagLib::FileStream stream(QStringToFileName(fileName), true);
     TagLib::MPEG::File fileRef(&stream, TagLib::ID3v2::FrameFactory::instance());
 #else
-    TagLib::MPEG::File fileRef(fileName.toLocal8Bit ().constData());
+    TagLib::MPEG::File fileRef(QStringToFileName(fileName));
 #endif
 
     if (useMetaData)
@@ -212,6 +213,5 @@ MetaDataModel* DecoderMADFactory::createMetaDataModel(const QString &path, QObje
 {
    return new MPEGMetaDataModel(m_using_rusxmms, path, parent);
 }
-
 
 Q_EXPORT_PLUGIN2(mad, DecoderMADFactory)

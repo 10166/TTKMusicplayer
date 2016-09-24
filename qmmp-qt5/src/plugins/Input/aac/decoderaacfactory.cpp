@@ -18,9 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QTranslator>
 #include <QFile>
-#include <QMessageBox>
 #include "aacfile.h"
 #include "aacmetadatamodel.h"
 #include "decoder_aac.h"

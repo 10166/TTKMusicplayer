@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2009 by Ilya Kotov                                 *
+ *   Copyright (C) 2006-2015 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -55,7 +55,7 @@ public:
     bool initialize();
     qint64 totalTime();
     int bitrate();
-    qint64 read(char *audio, qint64 maxSize);
+    qint64 read(unsigned char *audio, qint64 maxSize);
     void seek(qint64 time);
 
 private:

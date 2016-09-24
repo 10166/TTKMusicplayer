@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,9 +18,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
 #include <QStringList>
 #include <QRegExp>
+#include <QtPlugin>
+#include <QSettings>
+#include <QFile>
 #include <libmodplug/stdafx.h>
 #include <libmodplug/it_defs.h>
 #include <libmodplug/sndfile.h>
@@ -114,6 +116,5 @@ MetaDataModel* DecoderModPlugFactory::createMetaDataModel(const QString &path, Q
 {
     return new ModPlugMetaDataModel(path, parent);
 }
-
 
 Q_EXPORT_PLUGIN2(modplug,DecoderModPlugFactory)

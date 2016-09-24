@@ -23,7 +23,6 @@
 #include <QFileInfo>
 #include <QPluginLoader>
 #include <QApplication>
-#include <QTranslator>
 #include "decoderfactory.h"
 #include "outputfactory.h"
 #include "enginefactory.h"

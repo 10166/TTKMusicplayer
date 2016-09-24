@@ -36,9 +36,7 @@ Q_INTERFACES(VisualFactory)
 public:
     const VisualProperties properties() const;
     Visual *create(QWidget *parent);
-    QDialog *createConfigDialog(QWidget *parent);
-    void showAbout(QWidget *parent);
-    QTranslator *createTranslator(QObject *parent);
+
 };
 
 

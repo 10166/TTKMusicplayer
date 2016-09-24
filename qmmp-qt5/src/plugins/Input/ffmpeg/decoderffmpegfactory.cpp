@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,9 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QTranslator>
 #include <QSettings>
-#include <QMessageBox>
 extern "C"{
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -83,6 +81,10 @@ bool DecoderFFmpegFactory::canDecode(QIODevice *i) const
         return true;
     else if(filters.contains("*.vqf") && !memcmp(fmt->name, "vqf", 3))
         return true;
+    else if(filters.contains("*.ape") && !memcmp(fmt->name, "ape", 3))
+        return true;
+    else if(filters.contains("*.tta") && !memcmp(fmt->name, "tta", 3))
+        return true;
     return false;
 }
 
@@ -93,8 +95,6 @@ const DecoderProperties DecoderFFmpegFactory::properties() const
     filters << "*.wma" << "*.ape" << "*.tta" << "*.m4a" << "*.ra" << "*.shn" << "*.vqf" << "*.ac3";
     filters = settings.value("FFMPEG/filters", filters).toStringList();
 
-    //removed unsupported filters
-#if (LIBAVCODEC_VERSION_INT >= ((55<<16)+(34<<8)+0)) //libav 10
     if(!avcodec_find_decoder(AV_CODEC_ID_WMAV1))
         filters.removeAll("*.wma");
     if(!avcodec_find_decoder(AV_CODEC_ID_APE))
@@ -119,33 +119,6 @@ const DecoderProperties DecoderFFmpegFactory::properties() const
         filters.removeAll("*.mka");
     if(!avcodec_find_decoder(AV_CODEC_ID_TWINVQ))
         filters.removeAll("*.vqf");
-#else
-    if(!avcodec_find_decoder(CODEC_ID_WMAV1))
-        filters.removeAll("*.wma");
-    if(!avcodec_find_decoder(CODEC_ID_APE))
-        filters.removeAll("*.ape");
-    if(!avcodec_find_decoder(CODEC_ID_TTA))
-        filters.removeAll("*.tta");
-    if(!avcodec_find_decoder(CODEC_ID_AAC))
-        filters.removeAll("*.aac");
-    if(!avcodec_find_decoder(CODEC_ID_MP3))
-        filters.removeAll("*.mp3");
-    if(!avcodec_find_decoder(CODEC_ID_AAC) && !avcodec_find_decoder(CODEC_ID_ALAC))
-        filters.removeAll("*.m4a");
-    if(!avcodec_find_decoder(CODEC_ID_RA_288))
-        filters.removeAll("*.ra");
-    if(!avcodec_find_decoder(CODEC_ID_SHORTEN))
-        filters.removeAll("*.shn");
-    if(!avcodec_find_decoder(CODEC_ID_EAC3))
-        filters.removeAll("*.ac3");
-    if(!avcodec_find_decoder(CODEC_ID_DTS))
-        filters.removeAll("*.dts");
-    if(!avcodec_find_decoder(CODEC_ID_TRUEHD))
-        filters.removeAll("*.mka");
-    if(!avcodec_find_decoder(CODEC_ID_TWINVQ))
-        filters.removeAll("*.vqf");
-#endif
-
 
     DecoderProperties properties;
     properties.name = tr("FFmpeg Plugin");
@@ -189,7 +162,11 @@ QList<FileInfo *> DecoderFFmpegFactory::createPlayList(const QString &fileName, 
     QList <FileInfo*> list;
     AVFormatContext *in = 0;
 
+#ifdef Q_OS_WIN
+    if (avformat_open_input(&in,fileName.toUtf8().constData(), 0, 0) < 0)
+#else
     if (avformat_open_input(&in,fileName.toLocal8Bit().constData(), 0, 0) < 0)
+#endif
     {
         qDebug("DecoderFFmpegFactory: unable to open file");
         return list;

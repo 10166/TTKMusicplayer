@@ -1,24 +1,23 @@
 include(../../plugins.pri)
 
 HEADERS += decodersidfactory.h \
-    decoder_sid.h \
-    sidhelper.h
-
-
+           decoder_sid.h \
+           sidhelper.h
+    
 SOURCES += decoder_sid.cpp \
-    decodersidfactory.cpp \
-    sidhelper.cpp
-
+           decodersidfactory.cpp \
+           sidhelper.cpp
 
 TARGET = $$PLUGINS_PREFIX/Input/sid
 QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libsid.so
 
 INCLUDEPATH += ../../../ \
                 $$EXTRA_PREFIX/libsidplayfp/include
-
+                
 CONFIG += warn_on \
           plugin \
           link_pkgconfig
+          
 TEMPLATE = lib
 
 unix{
@@ -34,5 +33,4 @@ win32 {
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libsidplayfp/lib -lsidplayfp -lqmmp1
-#    LIBS += -lqmmp0 -lsidplayfp.dll
 }

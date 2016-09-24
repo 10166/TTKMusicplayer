@@ -1,7 +1,7 @@
 include(../../plugins.pri)
 
-TARGET = $$PLUGINS_PREFIX/Visual/analyzer
-QMAKE_CLEAN = $$PLUGINS_PREFIX/Visual/libanalyzer.so
+TARGET=$$PLUGINS_PREFIX/Visual/analyzer
+QMAKE_CLEAN =$$PLUGINS_PREFIX/Visual/libanalyzer.so
 
 
 HEADERS += analyzer.h \
@@ -9,11 +9,11 @@ HEADERS += analyzer.h \
            visualanalyzerfactory.h \
            inlines.h \
            colorwidget.h
-
+           
 SOURCES += analyzer.cpp \
            fft.c \
            visualanalyzerfactory.cpp \
-           colorwidget.cpp
+           colorwidget.cpp \
 
 
 INCLUDEPATH += ../../../

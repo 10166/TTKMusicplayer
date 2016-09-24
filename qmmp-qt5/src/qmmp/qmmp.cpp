@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2013 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,21 +19,25 @@
  ***************************************************************************/
 
 #include <QDir>
-#include <QApplication>
+#include <QCoreApplication>
 #include <QSettings>
 #include <QLocale>
+#include <QFile>
 #include <QByteArray>
 
 #ifndef LIB_DIR
 #define LIB_DIR "/lib/2.4.0.0"
 #endif
-#include <QDebug>
+
 #define DEV_SUFFIX "dev"
 
 #include "qmmp.h"
 
 QString Qmmp::m_configDir;
 QString Qmmp::m_langID;
+#ifdef Q_OS_WIN
+QString Qmmp::m_appDir;
+#endif
 
 const QString Qmmp::configFile()
 {
@@ -42,7 +46,19 @@ const QString Qmmp::configFile()
 
 const QString Qmmp::configDir()
 {
+#ifdef Q_OS_WIN
+    if(m_configDir.isEmpty())
+    {
+        if(isPortable())
+            return m_appDir + "/.qmmp/";
+        else
+            return  QDir::homePath() +"/.qmmp/";
+    }
+    else
+        return m_configDir;
+#else
     return m_configDir.isEmpty() ? QDir::homePath() +"/.qmmp/" : m_configDir;
+#endif
 }
 
 void Qmmp::setConfigDir(const QString &path)
@@ -60,9 +76,9 @@ const QString Qmmp::strVersion()
             .arg(QMMP_VERSION_PATCH);
 #if !QMMP_VERSION_STABLE
 #ifdef SVN_REVISION
-    ver += "-svn-"SVN_REVISION;
+    ver += "-svn-" SVN_REVISION;
 #else
-    ver += "-"DEV_SUFFIX;
+    ver += "-" DEV_SUFFIX;
 #endif
 #endif
     return ver;
@@ -74,7 +90,7 @@ const QString Qmmp::pluginsPath()
     if (!path.isEmpty())
        return path;
 #ifdef QMMP_INSTALL_PREFIX
-    QDir dir(QMMP_INSTALL_PREFIX"/"LIB_DIR"/qmmp");
+    QDir dir(QMMP_INSTALL_PREFIX "/" LIB_DIR "/qmmp");
     //qDebug(QMMP_INSTALL_PREFIX"/"LIB_DIR"/qmmp");
 #else
 #if defined(Q_OS_WIN) && !defined(Q_OS_CYGWIN)
@@ -123,3 +139,12 @@ void Qmmp::setUiLanguageID(const QString &code)
     settings.setValue("General/locale", code);
     m_langID.clear();
 }
+
+#ifdef Q_OS_WIN
+bool Qmmp::isPortable()
+{
+    if(m_appDir.isEmpty())
+        m_appDir = QCoreApplication::applicationDirPath();
+    return QFile::exists(m_appDir + "/qmmp_portable.txt");
+}
+#endif

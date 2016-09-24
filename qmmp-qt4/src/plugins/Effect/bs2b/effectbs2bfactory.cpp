@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QtPlugin>
 #include <bs2b/bs2bversion.h>
 #include <qmmp/qmmp.h>
 #include "effectbs2bfactory.h"

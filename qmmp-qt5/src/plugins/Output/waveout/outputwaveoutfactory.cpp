@@ -18,11 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-
 #include "outputwaveout.h"
 #include "outputwaveoutfactory.h"
-#include <QMessageBox>
-#include <QTranslator>
 
 const OutputProperties OutputWaveOutFactory::properties() const
 {

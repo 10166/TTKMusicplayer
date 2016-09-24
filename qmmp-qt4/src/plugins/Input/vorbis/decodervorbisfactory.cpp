@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,7 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
-#include <QtGui>
+
+#include <QtPlugin>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
 #include <taglib/vorbisfile.h>
@@ -28,7 +29,6 @@
 #include "decoder_vorbis.h"
 #include "vorbismetadatamodel.h"
 #include "decodervorbisfactory.h"
-
 
 // DecoderOggFactory
 
@@ -67,7 +67,7 @@ Decoder *DecoderVorbisFactory::create(const QString &url, QIODevice *input)
     if(!url.contains("://")) //local file
     {
         ReplayGainReader rg(url);
-        d->setReplayGainInfo(rg.replayGainInfo(), true);
+        d->setReplayGainInfo(rg.replayGainInfo());
     }
     return d;
 }
@@ -82,10 +82,10 @@ QList<FileInfo *> DecoderVorbisFactory::createPlayList(const QString &fileName, 
     FileInfo *info = new FileInfo(fileName);
 
 #if (TAGLIB_MAJOR_VERSION > 1) || ((TAGLIB_MAJOR_VERSION == 1) && (TAGLIB_MINOR_VERSION >= 8))
-    TagLib::FileStream stream(fileName.toLocal8Bit().constData(), true);
+    TagLib::FileStream stream(QStringToFileName(fileName), true);
     TagLib::Ogg::Vorbis::File fileRef(&stream);
 #else
-    TagLib::Ogg::Vorbis::File fileRef(fileName.toLocal8Bit().constData());
+    TagLib::Ogg::Vorbis::File fileRef(QStringToFileName(fileName));
 #endif
     TagLib::Ogg::XiphComment *tag = useMetaData ? fileRef.tag() : 0;
 
@@ -126,6 +126,5 @@ QList<FileInfo *> DecoderVorbisFactory::createPlayList(const QString &fileName, 
     list << info;
     return list;
 }
-
 
 Q_EXPORT_PLUGIN2(vorbis,DecoderVorbisFactory)

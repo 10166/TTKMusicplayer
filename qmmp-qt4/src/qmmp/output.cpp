@@ -25,6 +25,7 @@ void Output::configure(quint32 freq, ChannelMap map, Qmmp::AudioFormat format)
     m_frequency = freq;
     m_chan_map = map;
     m_format = format;
+    m_sample_size = AudioParameters::sampleSize(format);
 }
 
 AudioParameters Output::audioParameters() const
@@ -54,7 +55,7 @@ Qmmp::AudioFormat Output::format() const
 
 int Output::sampleSize() const
 {
-    return AudioParameters::sampleSize(m_format);
+    return m_sample_size;
 }
 
 void Output::suspend()
@@ -142,14 +143,21 @@ void Output::setCurrentFactory(OutputFactory* factory)
 OutputFactory *Output::currentFactory()
 {
     loadPlugins();
+
     QSettings settings (Qmmp::configFile(), QSettings::IniFormat);
+#ifdef QMMP_DEFAULT_OUTPUT
+    QString name = settings.value("Output/current_plugin", QMMP_DEFAULT_OUTPUT).toString();
+#else
 #ifdef Q_OS_LINUX
     QString name = settings.value("Output/current_plugin", "alsa").toString();
 #elif defined Q_WS_WIN
     QString name = settings.value("Output/current_plugin", "directsound").toString();
+#elif defined Q_OS_MAC
+    QString name = settings.value("Output/current_plugin", "qtmultimedia").toString();
 #else
     QString name = settings.value("Output/current_plugin", "oss4").toString();
 #endif
+#endif //QMMP_DEFAULT_OUTPUT
     foreach(QmmpPluginCache *item, *m_cache)
     {
         if (item->shortName() == name && item->outputFactory())

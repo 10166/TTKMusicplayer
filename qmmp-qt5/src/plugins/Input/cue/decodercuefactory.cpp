@@ -18,8 +18,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QTranslator>
 #include "decoder_cue.h"
 #include "cuemetadatamodel.h"
 #include "cueparser.h"

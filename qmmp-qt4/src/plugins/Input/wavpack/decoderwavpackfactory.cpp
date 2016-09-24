@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,8 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
-
+#include <QtPlugin>
 #include "wavpackmetadatamodel.h"
 #include "decoder_wavpack.h"
 #include "decoderwavpackfactory.h"
@@ -83,8 +82,13 @@ QList<FileInfo *> DecoderWavPackFactory::createPlayList(const QString &fileName,
         return QList<FileInfo *>() << info;
     }
 
+#if defined(Q_OS_WIN) && defined(OPEN_FILE_UTF8)
+    WavpackContext *ctx = WavpackOpenFileInput (fileName.toUtf8().constData(),
+                                                err, OPEN_WVC | OPEN_TAGS | OPEN_FILE_UTF8, 0);
+#else
     WavpackContext *ctx = WavpackOpenFileInput (fileName.toLocal8Bit().constData(),
                                                 err, OPEN_WVC | OPEN_TAGS, 0);
+#endif
     if (!ctx)
     {
         qWarning("DecoderWavPackFactory: error: %s", err);
@@ -146,6 +150,5 @@ MetaDataModel* DecoderWavPackFactory::createMetaDataModel(const QString &path, Q
     else
         return 0;
 }
-
 
 Q_EXPORT_PLUGIN2(wavpack,DecoderWavPackFactory)

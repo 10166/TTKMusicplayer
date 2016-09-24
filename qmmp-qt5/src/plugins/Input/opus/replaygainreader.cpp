@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2013-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2013-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,14 +21,16 @@
 #include <QtGlobal>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
-//#include <taglib/opusfile.h>
+#include <taglib/opusfile.h>
+#include <taglib/tfilestream.h>
 #include "replaygainreader.h"
 
 ReplayGainReader::ReplayGainReader(const QString &path)
 {
-//    TagLib::Ogg::Opus::File fileRef(path.toLocal8Bit ().constData());
-//    if(fileRef.tag())
-//        readVorbisComment(fileRef.tag());
+    TagLib::FileStream stream(QStringToFileName(path), true);
+    TagLib::Ogg::Opus::File fileRef(&stream);
+    if(fileRef.tag())
+        readVorbisComment(fileRef.tag());
 }
 
 QMap <Qmmp::ReplayGainKey, double> ReplayGainReader::replayGainInfo() const

@@ -31,8 +31,6 @@
 #include <qmmp/fileinfo.h>
 
 
-
-
 class DecoderMPCFactory : public QObject,
                           DecoderFactory
 {

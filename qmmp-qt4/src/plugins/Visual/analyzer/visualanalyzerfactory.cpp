@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Ilya Kotov                                      *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QtPlugin>
 #include <qmmp/qmmp.h>
 #include "visualanalyzerfactory.h"
 #include "analyzer.h"
@@ -37,6 +37,5 @@ Visual *VisualAnalyzerFactory::create(QWidget *parent)
 {
     return new Analyzer(parent);
 }
-
 
 Q_EXPORT_PLUGIN2(analyzer,VisualAnalyzerFactory)

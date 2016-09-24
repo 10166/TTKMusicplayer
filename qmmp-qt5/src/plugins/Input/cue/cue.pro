@@ -1,27 +1,27 @@
 include(../../plugins.pri)
 
 HEADERS += decodercuefactory.h \
-    cueparser.h \
-    decoder_cue.h \
-    cuemetadatamodel.h
-
-
+           cueparser.h \
+           decoder_cue.h \
+           cuemetadatamodel.h
+    
 SOURCES += decoder_cue.cpp \
-    decodercuefactory.cpp \
-    cueparser.cpp \
-    cuemetadatamodel.cpp
-
-
+           decodercuefactory.cpp \
+           cueparser.cpp \
+           cuemetadatamodel.cpp
+    
 win32:HEADERS += ../../../../src/qmmp/decoder.h \
                  ../../../../src/qmmp/statehandler.h
+    
 TARGET = $$PLUGINS_PREFIX/Input/cue
 unix:QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libcue.so
 
 INCLUDEPATH += ../../../ \
-         $$EXTRA_PREFIX/libenca/include
-
+               $$EXTRA_PREFIX/libenca/include
+               
 CONFIG += warn_on \
-    plugin
+          plugin
+    
 TEMPLATE = lib
 unix{
    QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
@@ -31,13 +31,6 @@ unix{
 win32{
    QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
    LIBS += -lqmmp1
-   msvc:{
-       HEADERS += ../../../../src/qmmp/qmmpsettings.h \
-                  ../../../../src/qmmp/visual.h \
-                  ../../../../src/qmmp/soundcore.h \
-                  ../../../../src/qmmp/abstractengine.h \
-                  ../../../../src/qmmp/metadatamodel.h
-   }
 }
 
 contains(CONFIG, WITH_ENCA){
@@ -45,7 +38,6 @@ contains(CONFIG, WITH_ENCA){
    DEFINES += WITH_ENCA
    win32:LIBS += -L$$EXTRA_PREFIX/libenca/lib -lenca
 }
-
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer

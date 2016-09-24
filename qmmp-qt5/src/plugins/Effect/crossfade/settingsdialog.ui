@@ -26,7 +26,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>交叠:</string>
+      <string>Overlap:</string>
      </property>
     </widget>
    </item>
@@ -62,9 +62,6 @@
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-     <property name="centerButtons">
-      <bool>false</bool>
      </property>
     </widget>
    </item>

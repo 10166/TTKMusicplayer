@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2009-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,9 +30,10 @@
 #include "effectfactory.h"
 #include "inputsource.h"
 #include "statehandler.h"
-#include "audioconverter_p.h"
+#include "audioconverter.h"
 #include "qmmpaudioengine_p.h"
 #include "channelconverter_p.h"
+#include "dithering_p.h"
 #include "metadatamanager.h"
 
 #define TRANSPORT_TIMEOUT 5000 //ms
@@ -43,14 +44,18 @@ QmmpAudioEngine::QmmpAudioEngine(QObject *parent)
     m_output_buf = 0;
     m_output_size = 0;
     m_bks = 0;
+    m_sample_size = 0;
     m_decoder = 0;
     m_output = 0;
     m_muted = false;
-    m_replayGain = new ReplayGain;
+    m_replayGain = 0;
+    m_dithering = 0;
+    m_converter = new AudioConverter;
+
     m_settings = QmmpSettings::instance();
     connect(m_settings,SIGNAL(replayGainSettingsChanged()), SLOT(updateReplayGainSettings()));
+    connect(m_settings,SIGNAL(audioSettingsChanged()), SLOT(updateAudioSettings()));
     connect(m_settings, SIGNAL(eqSettingsChanged()), SLOT(updateEqSettings()));
-    updateReplayGainSettings();
     reset();
     m_instance = this;
 }
@@ -64,7 +69,7 @@ QmmpAudioEngine::~QmmpAudioEngine()
     m_output_buf = 0;
     qDeleteAll(m_effects);
     m_instance = 0;
-    delete m_replayGain;
+    delete m_converter;
 }
 
 void QmmpAudioEngine::reset()
@@ -175,7 +180,7 @@ void QmmpAudioEngine::addEffect(EffectFactory *factory)
         Effect *effect = Effect::create(factory);
         if(!effect)
             return;
-        effect->configure(m_ap.sampleRate(), m_ap.channelMap(), m_ap.format());
+        effect->configure(m_ap.sampleRate(), m_ap.channelMap());
         if(effect->audioParameters() == m_ap)
         {
             mutex()->lock();
@@ -290,22 +295,24 @@ void QmmpAudioEngine::stop()
     reset();
     while(!m_effects.isEmpty()) //delete effects
         delete m_effects.takeFirst();
+    m_replayGain = 0;
 }
 
-qint64 QmmpAudioEngine::produceSound(char *data, qint64 size, quint32 brate)
+qint64 QmmpAudioEngine::produceSound(unsigned char *data, qint64 size, quint32 brate)
 {
     Buffer *b = m_output->recycler()->get();
-    uint sz = size < m_bks ? size : m_bks;
-    //m_replayGain->applyReplayGain(data, sz);
-    memcpy(b->data, data, sz);
-    b->nbytes = sz;
+    size_t sz = size < m_bks ? size : m_bks;
+    size_t samples = sz / m_sample_size;
+
+    m_converter->toFloat(data, b->data, samples);
+
+    b->samples = samples;
     b->rate = brate;
     foreach(Effect* effect, m_effects)
     {
         effect->applyEffect(b);
     }
-    size -= sz;
-    memmove(data, data + sz, size);
+    memmove(data, data + sz, size - sz);
     m_output->recycler()->add();
     return sz;
 }
@@ -323,12 +330,25 @@ void QmmpAudioEngine::finish()
 
 void QmmpAudioEngine::updateReplayGainSettings()
 {
-    mutex()->lock();
-    m_replayGain->updateSettings(m_settings->replayGainMode(),
-                                 m_settings->replayGainPreamp(),
-                                 m_settings->replayGainDefaultGain(),
-                                 m_settings->replayGainPreventClipping());
-    mutex()->unlock();
+    if(m_replayGain)
+    {
+        mutex()->lock();
+        m_replayGain->updateSettings(m_settings->replayGainMode(),
+                                     m_settings->replayGainPreamp(),
+                                     m_settings->replayGainDefaultGain(),
+                                     m_settings->replayGainPreventClipping());
+        mutex()->unlock();
+    }
+}
+
+void QmmpAudioEngine::updateAudioSettings()
+{
+    if(m_dithering)
+    {
+        mutex()->lock();
+        m_dithering->setEnabled(m_settings->useDithering());
+        mutex()->unlock();
+    }
 }
 
 void QmmpAudioEngine::updateEqSettings()
@@ -352,9 +372,9 @@ void QmmpAudioEngine::run()
     }
     m_decoder = m_decoders.dequeue();
     addOffset(); //offset
-    m_replayGain->setReplayGainInfo(m_decoder->replayGainInfo(), m_decoder->hasHeadroom());
     mutex()->unlock();
     m_output->start();
+    m_dithering->setFormats(m_decoder->audioParameters().format(), m_output->format());
     StateHandler::instance()->dispatch(Qmmp::Buffering);
     StateHandler::instance()->dispatch(m_decoder->totalTime());
     StateHandler::instance()->dispatch(Qmmp::Playing);
@@ -403,8 +423,7 @@ void QmmpAudioEngine::run()
         {
             delay = 0;
             // decode
-            len = m_replayGain->read(m_decoder,(char *)(m_output_buf + m_output_at), m_output_size - m_output_at);
-            //len = m_decoder->read((char *)(m_output_buf + m_output_at), m_output_size - m_output_at);
+            len = m_decoder->read((m_output_buf + m_output_at), m_output_size - m_output_at);
         }
 
         if (len > 0)
@@ -424,7 +443,7 @@ void QmmpAudioEngine::run()
                 StateHandler::instance()->dispatch(Qmmp::Buffering);
                 m_decoder->next();
                 StateHandler::instance()->dispatch(m_decoder->totalTime());
-                m_replayGain->setReplayGainInfo(m_decoder->replayGainInfo(), m_decoder->hasHeadroom());
+                m_replayGain->setReplayGainInfo(m_decoder->replayGainInfo());
                 m_output->mutex()->lock();
                 m_output->seek(0); //reset counter
                 m_output->mutex()->unlock();
@@ -439,7 +458,7 @@ void QmmpAudioEngine::run()
                 delete m_decoder;
                 m_decoder = m_decoders.dequeue();
                 //m_seekTime = m_inputs.value(m_decoder)->offset();
-                m_replayGain->setReplayGainInfo(m_decoder->replayGainInfo(), m_decoder->hasHeadroom());
+                flush(true);
                 //use current output if possible
                 prepareEffects(m_decoder);
                 if(m_ap == m_output->audioParameters())
@@ -455,11 +474,9 @@ void QmmpAudioEngine::run()
                     mutex()->unlock();
                     sendMetaData();
                     addOffset(); //offset
-                    continue;
                 }
                 else
                 {
-                    flush(true);
                     finish();
                     //wake up waiting threads
                     mutex()->unlock();
@@ -477,8 +494,12 @@ void QmmpAudioEngine::run()
                         StateHandler::instance()->dispatch(m_decoder->totalTime());
                         sendMetaData();
                         addOffset(); //offset
-                        continue;
                     }
+                }
+                if(m_output)
+                {
+                    m_dithering->setFormats(m_decoder->audioParameters().format(), m_output->format());
+                    continue;
                 }
             }
 
@@ -496,8 +517,13 @@ void QmmpAudioEngine::run()
                 }
                 m_output->recycler()->mutex()->unlock();
             }
-            m_done = true;
-            m_finish = !m_user_stop;
+
+            //continue if new input was queued
+            if(m_decoders.isEmpty() || m_user_stop)
+            {
+                m_done = true;
+                m_finish = !m_user_stop;
+            }
         }
         else
             m_finish = true;
@@ -543,7 +569,7 @@ void QmmpAudioEngine::flush(bool final)
             m_done = true;
         else
         {
-            m_output_at -= produceSound((char*)m_output_buf, m_output_at, m_bitrate);
+            m_output_at -= produceSound(m_output_buf, m_output_at, m_bitrate);
         }
 
         if (!m_output->recycler()->empty())
@@ -586,50 +612,65 @@ OutputWriter *QmmpAudioEngine::createOutput()
 {
     OutputWriter *output = new OutputWriter(0);
     output->setMuted(m_muted);
-    if (!output->initialize(m_ap.sampleRate(), m_ap.channelMap(), m_ap.format()))
+    if (!output->initialize(m_ap.sampleRate(), m_ap.channelMap()))
     {
         delete output;
         StateHandler::instance()->dispatch(Qmmp::FatalError);
         return 0;
     }
-
-    if(m_output_buf)
-        delete [] m_output_buf;
-    m_bks = output->recycler()->blockSize();
-    m_output_size = m_bks * 4;
-    m_output_buf = new unsigned char[m_output_size];
     return output;
 }
 
 void QmmpAudioEngine::prepareEffects(Decoder *d)
 {
     m_ap = d->audioParameters();
-
-    //m_ap = AudioParameters(44100, 2, Qmmp::PCM_S24LE);
-
-    m_replayGain->configure(m_ap);
-
-    foreach(Effect *e, m_effects) //remove disabled and external effects
+    //output buffer for decoder
+    if(m_output_buf)
+        delete [] m_output_buf;
+    m_bks = QMMP_BLOCK_FRAMES * m_ap.channels() * m_ap.sampleSize(); //block size
+    m_output_size = m_bks * 4;
+    m_sample_size = m_ap.sampleSize();
+    m_output_buf = new unsigned char[m_output_size];
+    //audio converter
+    m_converter->configure(m_ap.format());
+    m_ap = AudioParameters(m_ap.sampleRate(), m_ap.channelMap(), Qmmp::PCM_FLOAT);
+    //remove disabled and external effects
+    foreach(Effect *e, m_effects)
     {
         if(!e->factory() || !Effect::isEnabled(e->factory()))
         {
             m_effects.removeAll(e);
             m_blockedEffects.removeAll(e);
-            delete e;
         }
     }
+    m_replayGain = 0;
+    m_dithering = 0;
     QList <Effect *> tmp_effects = m_effects;
     m_effects.clear();
 
-    m_effects << new ChannelConverter(m_ap.channelMap().remaped());
-    m_effects.at(0)->configure(m_ap.sampleRate(), m_ap.channelMap(), m_ap.format());
-    m_ap = m_effects.at(0)->audioParameters();
-
-    if(m_settings->use16BitOutput())
+    //replay gain
     {
-        m_effects << new AudioConverter();
-        m_effects.at(0)->configure(m_ap.sampleRate(), m_ap.channelMap(), m_ap.format());
-        m_ap = m_effects.at(0)->audioParameters();
+        m_replayGain = new ReplayGain();
+        m_replayGain->configure(m_ap.sampleRate(), m_ap.channelMap());
+        m_effects << m_replayGain;
+        m_replayGain->updateSettings(m_settings->replayGainMode(),
+                                     m_settings->replayGainPreamp(),
+                                     m_settings->replayGainDefaultGain(),
+                                     m_settings->replayGainPreventClipping());
+        m_replayGain->setReplayGainInfo(d->replayGainInfo());
+    }
+    //dithering
+    {
+        m_dithering = new Dithering;
+        m_dithering->configure(m_ap.sampleRate(), m_ap.channelMap());
+        m_effects << m_dithering;
+    }
+    //channel order converter
+    if(m_ap.channelMap() != m_ap.channelMap().remaped())
+    {
+        m_effects << new ChannelConverter(m_ap.channelMap().remaped());
+        m_effects.last()->configure(m_ap.sampleRate(), m_ap.channelMap());
+        m_ap = m_effects.last()->audioParameters();
     }
 
     foreach(EffectFactory *factory, Effect::enabledFactories())
@@ -652,7 +693,7 @@ void QmmpAudioEngine::prepareEffects(Decoder *d)
         if(!effect)
         {
             effect = Effect::create(factory);
-            effect->configure(m_ap.sampleRate(), m_ap.channelMap(), m_ap.format());
+            effect->configure(m_ap.sampleRate(), m_ap.channelMap());
             if (m_ap != effect->audioParameters())
             {
                 m_blockedEffects << effect; //list of effects which require restart

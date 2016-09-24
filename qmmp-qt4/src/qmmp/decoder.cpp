@@ -21,16 +21,14 @@ extern "C"
 Decoder::Decoder(QIODevice *input) : m_input(input)
 {
     m_hasMetaData = false;
-    m_hasHeadroom = false;
 }
 
 Decoder::~Decoder()
 {}
 
-void Decoder::setReplayGainInfo(const QMap<Qmmp::ReplayGainKey, double> &rg, bool headroom)
+void Decoder::setReplayGainInfo(const QMap<Qmmp::ReplayGainKey, double> &rg)
 {
     m_rg = rg;
-    m_hasHeadroom = headroom;
 }
 
 void Decoder::configure(quint32 srate, const ChannelMap &map, Qmmp::AudioFormat format)
@@ -42,14 +40,6 @@ void Decoder::configure(quint32 srate, int channels, Qmmp::AudioFormat f)
 {
     qDebug("Decoder: using internal channel order");
     m_parameters = AudioParameters(srate, ChannelMap(channels), f);
-}
-
-qint64 Decoder::read(float *data, qint64 samples)
-{
-    Q_UNUSED(data);
-    Q_UNUSED(samples);
-    qFatal("Decoder: peak overflow is enabled but does not implemented");
-    return -1;
 }
 
 void Decoder::next()
@@ -84,11 +74,6 @@ QIODevice *Decoder::input()
 bool Decoder::hasMetaData() const
 {
     return m_hasMetaData;
-}
-
-bool Decoder::hasHeadroom() const
-{
-    return m_hasHeadroom;
 }
 
 QMap<Qmmp::MetaData, QString> Decoder::takeMetaData()

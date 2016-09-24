@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014 by Ilya Kotov                                      *
+ *   Copyright (C) 2014-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QtPlugin>
 #include "outputdirectsound.h"
 #include "outputdirectsoundfactory.h"
 
@@ -41,6 +41,5 @@ Volume *OutputDirectSoundFactory::createVolume()
 {
     return new VolumeDirectSound();
 }
-
 
 Q_EXPORT_PLUGIN2(directsound,OutputDirectSoundFactory)

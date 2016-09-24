@@ -1,29 +1,33 @@
 include(../../plugins.pri)
 
 HEADERS += decodercuefactory.h \
-    cueparser.h \
-    decoder_cue.h \
-    cuemetadatamodel.h
-
-
+           cueparser.h \
+           decoder_cue.h \
+           cuemetadatamodel.h
+    
 SOURCES += decoder_cue.cpp \
-    decodercuefactory.cpp \
-    cueparser.cpp \
-    cuemetadatamodel.cpp
-
-
+           decodercuefactory.cpp \
+           cueparser.cpp \
+           cuemetadatamodel.cpp
+    
 win32:HEADERS += ../../../../src/qmmp/decoder.h \
-    ../../../../src/qmmp/statehandler.h
+                 ../../../../src/qmmp/statehandler.h
+    
 TARGET = $$PLUGINS_PREFIX/Input/cue
 unix:QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libcue.so
 
 INCLUDEPATH += ../../../ \
-         $$EXTRA_PREFIX/libenca/include
-
+               $$EXTRA_PREFIX/libenca/include
+               
 CONFIG += warn_on \
-    plugin
+          plugin
+          
 TEMPLATE = lib
+
 unix{
+   isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
+   target.path = $$LIB_DIR/qmmp/Input
+   INSTALLS += target
    QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
    LIBS += -L$$EXTRA_PREFIX/libenca/lib -lenca -lqmmp
 }
@@ -36,17 +40,7 @@ win32{
 contains(CONFIG, WITH_ENCA){
    CONFIG += link_pkgconfig
    DEFINES += WITH_ENCA
-   win32:{
-      gcc{
-          LIBS += -L$$EXTRA_PREFIX/libenca/lib -lenca
-      }
-   }
+   unix:PKGCONFIG += enca
+   win32:LIBS += -L$$EXTRA_PREFIX/libenca/lib -lenca
 
-}
-
-
-unix {
-    isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
-    INSTALLS += target
 }

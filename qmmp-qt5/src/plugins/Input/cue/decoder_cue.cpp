@@ -99,7 +99,7 @@ bool DecoderCUE::initialize()
     configure(m_decoder->audioParameters().sampleRate(),
               m_decoder->audioParameters().channelMap(),
               m_decoder->audioParameters().format());
-    setReplayGainInfo(m_parser->replayGain(m_track), m_decoder->hasHeadroom());
+    setReplayGainInfo(m_parser->replayGain(m_track));
     length_in_bytes = audioParameters().sampleRate() *
                       audioParameters().channels() *
                       audioParameters().sampleSize() * m_length/1000;
@@ -124,7 +124,7 @@ void DecoderCUE::seek(qint64 pos)
                     audioParameters().sampleSize() * pos/1000;
 }
 
-qint64 DecoderCUE::read(char *data, qint64 size)
+qint64 DecoderCUE::read(unsigned char *data, qint64 size)
 {
     if(length_in_bytes - m_totalBytes < m_sz) //end of cue track
         return 0;

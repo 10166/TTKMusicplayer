@@ -1,30 +1,28 @@
 include(../../plugins.pri)
 
 HEADERS += decodermadfactory.h \
-    decoder_mad.h \
-    tagextractor.h \
-    mpegmetadatamodel.h \
-    replaygainreader.h
-
-
+           decoder_mad.h \
+           tagextractor.h \
+           mpegmetadatamodel.h \
+           replaygainreader.h
+    
 SOURCES += decoder_mad.cpp \
-    decodermadfactory.cpp \
-    tagextractor.cpp \
-    mpegmetadatamodel.cpp \
-    replaygainreader.cpp
-
-
+           decodermadfactory.cpp \
+           tagextractor.cpp \
+           mpegmetadatamodel.cpp \
+           replaygainreader.cpp
+    
 TARGET = $$PLUGINS_PREFIX/Input/mad
 
 INCLUDEPATH += ../../../ \
-                   $$EXTRA_PREFIX/libtaglib/include \
-                   $$EXTRA_PREFIX/libmad/include
-
+               $$EXTRA_PREFIX/libtaglib/include \
+               $$EXTRA_PREFIX/libmad/include
+               
 CONFIG += warn_on \
-    plugin \
-    link_pkgconfig
+          plugin \
+          link_pkgconfig
+    
 TEMPLATE = lib
-
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
@@ -41,10 +39,7 @@ win32 {
     HEADERS += ../../../../src/qmmp/metadatamodel.h \
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
-    gcc{
-        LIBS += -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll \
-                -L$$EXTRA_PREFIX/libmad/lib -lmad \
-                -lqmmp0
-    }
-#    LIBS += -lqmmp0 -lmad -ltag.dll
+    LIBS += -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll \
+            -L$$EXTRA_PREFIX/libmad/lib -lmad \
+            -lqmmp0
 }

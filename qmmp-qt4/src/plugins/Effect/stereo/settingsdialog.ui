@@ -28,7 +28,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>效果强度:</string>
+        <string>Effect intensity:</string>
        </property>
       </widget>
      </item>

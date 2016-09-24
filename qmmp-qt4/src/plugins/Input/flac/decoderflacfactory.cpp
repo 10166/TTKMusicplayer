@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QtPlugin>
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
 #include <taglib/flacfile.h>
@@ -33,7 +33,6 @@
 #include "decoder_flac.h"
 #include "flacmetadatamodel.h"
 #include "decoderflacfactory.h"
-
 
 // DecoderFLACFactory
 
@@ -102,7 +101,7 @@ QList<FileInfo *> DecoderFLACFactory::createPlayList(const QString &fileName, bo
     }
 
 #if (TAGLIB_MAJOR_VERSION > 1) || ((TAGLIB_MAJOR_VERSION == 1) && (TAGLIB_MINOR_VERSION >= 8))
-    TagLib::FileStream stream(fileName.toLocal8Bit().constData(), true);
+    TagLib::FileStream stream(QStringToFileName(fileName), true);
 #endif
 
     if(fileName.endsWith(".flac", Qt::CaseInsensitive))
@@ -110,7 +109,7 @@ QList<FileInfo *> DecoderFLACFactory::createPlayList(const QString &fileName, bo
 #if (TAGLIB_MAJOR_VERSION > 1) || ((TAGLIB_MAJOR_VERSION == 1) && (TAGLIB_MINOR_VERSION >= 8))
         flacFile = new TagLib::FLAC::File(&stream, TagLib::ID3v2::FrameFactory::instance());
 #else
-        flacFile = new TagLib::FLAC::File(fileName.toLocal8Bit().constData());
+        flacFile = new TagLib::FLAC::File(QStringToFileName(fileName));
 #endif
         tag = useMetaData ? flacFile->xiphComment() : 0;
         ap = flacFile->audioProperties();
@@ -120,7 +119,7 @@ QList<FileInfo *> DecoderFLACFactory::createPlayList(const QString &fileName, bo
 #if (TAGLIB_MAJOR_VERSION > 1) || ((TAGLIB_MAJOR_VERSION == 1) && (TAGLIB_MINOR_VERSION >= 8))
         oggFlacFile = new TagLib::Ogg::FLAC::File(&stream);
 #else
-        oggFlacFile = new TagLib::Ogg::FLAC::File(fileName.toLocal8Bit().constData());
+        oggFlacFile = new TagLib::Ogg::FLAC::File(QStringToFileName(fileName));
 #endif
         tag = useMetaData ? oggFlacFile->tag() : 0;
         ap = oggFlacFile->audioProperties();
@@ -194,6 +193,5 @@ MetaDataModel*DecoderFLACFactory::createMetaDataModel(const QString &path, QObje
     else
         return 0;
 }
-
 
 Q_EXPORT_PLUGIN2(flac,DecoderFLACFactory)

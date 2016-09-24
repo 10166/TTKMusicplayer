@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2012 by Ilya Kotov                                 *
+ *   Copyright (C) 2006-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -74,14 +74,6 @@ bool DecoderAAC::initialize()
         m_input_buf = new char[AAC_BUFFER_SIZE];
     m_input_at = 0;
 
-    if (!input()->isOpen())
-    {
-        if (!input()->open(QIODevice::ReadOnly))
-        {
-            qWarning("DecoderAAC: %s", qPrintable(input()->errorString ()));
-            return false;
-        }
-    }
     AACFile aac_file(input());
     if (!aac_file.isValid())
     {
@@ -94,14 +86,8 @@ bool DecoderAAC::initialize()
     {
         qDebug("DecoderAAC: header offset = %d bytes", aac_file.offset());
 
-#ifndef Q_CC_MSVC
         char data[aac_file.offset()];
         input()->read(data, aac_file.offset());
-#else
-        char *data = new char[aac_file.offset()];
-        input()->read(data, aac_file.offset());
-        delete[] data;
-#endif
     }
 
     m_totalTime = aac_file.length() * 1000;
@@ -150,7 +136,7 @@ bool DecoderAAC::initialize()
     return true;
 }
 
-qint64 DecoderAAC::read(char *audio, qint64 maxSize)
+qint64 DecoderAAC::read(unsigned char *audio, qint64 maxSize)
 {
     NeAACDecFrameInfo frame_info;
     qint64 size = 0, to_read, read;

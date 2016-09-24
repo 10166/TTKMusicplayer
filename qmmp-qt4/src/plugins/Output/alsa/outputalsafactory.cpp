@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Ilya Kotov                                      *
+ *   Copyright (C) 2007-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QtPlugin>
 #include <qmmp/qmmp.h>
 #include "outputalsa.h"
 #include "outputalsafactory.h"
@@ -43,6 +43,5 @@ Volume *OutputALSAFactory::createVolume()
 {
     return new VolumeALSA();
 }
-
 
 Q_EXPORT_PLUGIN2(alsa,OutputALSAFactory)

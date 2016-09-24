@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QThread>
+#include <unistd.h>
 #include "outputnull.h"
 
 
@@ -58,7 +58,7 @@ qint64 OutputNull::latency()
 qint64 OutputNull::writeAudio(unsigned char *data, qint64 maxSize)
 {
    Q_UNUSED(data);
-   QThread::usleep(maxSize * 1000000 / m_bytes_per_second);
+   usleep(maxSize * 1000000 / m_bytes_per_second);
    return maxSize;
 }
 

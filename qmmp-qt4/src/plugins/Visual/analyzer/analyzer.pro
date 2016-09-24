@@ -9,8 +9,8 @@ HEADERS += analyzer.h \
            visualanalyzerfactory.h \
            inlines.h \
            colorwidget.h
-
-
+           
+           
 SOURCES += analyzer.cpp \
            fft.c \
            visualanalyzerfactory.cpp \
@@ -18,7 +18,7 @@ SOURCES += analyzer.cpp \
 
 INCLUDEPATH += ../../../
 CONFIG += warn_on \
-            plugin
+          plugin
 
 TEMPLATE = lib
 

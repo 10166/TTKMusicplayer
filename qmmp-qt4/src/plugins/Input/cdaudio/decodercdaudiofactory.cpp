@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2009-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2009-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,7 +18,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
+#include <QtPlugin>
 #include <QRegExp>
 #include <cdio/version.h>
 #include <cddb/version.h>
@@ -77,6 +77,5 @@ MetaDataModel* DecoderCDAudioFactory::createMetaDataModel(const QString &path, Q
     Q_UNUSED(path);
     return 0;
 }
-
 
 Q_EXPORT_PLUGIN2(cdaudio, DecoderCDAudioFactory)

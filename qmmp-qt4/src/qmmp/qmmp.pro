@@ -1,5 +1,6 @@
 unix:include(../../qmmp.pri)
 win32:include(../../qmmp.pri)
+
 HEADERS += \
     buffer.h \
     decoder.h \
@@ -29,7 +30,6 @@ HEADERS += \
     enginefactory.h \
     metadatamanager.h \
     replaygain_p.h \
-    audioconverter_p.h \
     qmmpsettings.h \
     eqsettings.h \
     qmmpevents_p.h \
@@ -40,8 +40,10 @@ HEADERS += \
     qmmpplugincache_p.h \
     channelmap.h \
     channelconverter_p.h \
+    audioconverter.h \
+    dithering_p.h \
     tagreadandwrite.h
-
+    
 SOURCES += recycler.cpp \
     decoder.cpp \
     output.cpp \
@@ -74,33 +76,34 @@ SOURCES += recycler.cpp \
     channelmap.cpp \
     channelconverter.cpp \
     volume.cpp \
+    dithering.cpp \
     tagreadandwrite.cpp
-
-FORMS +=
+    
 unix:TARGET = ../../lib/$$TTKMusicPlayer/qmmp
 win32:TARGET = ../../../bin/$$TTKMusicPlayer/qmmp
+
 CONFIG += shared \
-    warn_on \
-    qt \
-    thread
+          warn_on \
+          qt \
+          thread
+    
 TEMPLATE = lib
+
 VERSION = $$QMMP_VERSION
 
 unix {
   isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
   DEFINES += LIB_DIR=\\\"$$LIB_DIR\\\"
-  SVN_REVISION = $$system(./svn_revision.sh)
-  !isEmpty(SVN_REVISION) {
-    DEFINES += SVN_REVISION=\\\"$$SVN_REVISION\\\"
-  }
 }
 
 unix {
     target.path = $$LIB_DIR
     devel.files += \
         abstractengine.h \
+        audioconverter.h \
         audioparameters.h \
         buffer.h \
+        channelmap.h \
         decoderfactory.h \
         decoder.h \
         effectfactory.h \
@@ -122,7 +125,6 @@ unix {
         visualfactory.h \
         visual.h \
         volume.h \
-        channelmap.h \
         tagreadandwrite.h
 
     devel.path = /include/qmmp
@@ -130,13 +132,14 @@ unix {
         devel
     DESTDIR = .
 }
+
 INCLUDEPATH += ./ \
                ../../../extra/gcc/libtaglib/include
 win32:{
     LIBS += -L../../../extra/gcc/libtaglib/lib -ltag.dll
 }
 
-unix: {
+unix {
     LIBS += -L../../../extra/gcc/libtaglib/lib -ltag
     CONFIG += create_pc create_prl no_install_prl
     QMAKE_PKGCONFIG_NAME = qmmp

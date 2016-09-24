@@ -24,7 +24,6 @@
 #include <QObject>
 #include <QList>
 #include <QMetaObject>
-#include <QApplication>
 #include <QDialog>
 #include <QPluginLoader>
 #include "visualfactory.h"
@@ -94,7 +93,6 @@ QString Visual::file(VisualFactory *factory)
 void Visual::setEnabled(VisualFactory* factory, bool enable)
 {
     checkFactories();
-
     if (!m_factories->contains(factory))
         return;
 
@@ -106,7 +104,6 @@ void Visual::setEnabled(VisualFactory* factory, bool enable)
     {
         if (!visList.contains(name))
             visList << name;
-
         if (!m_vis_map.value(factory) && m_parentWidget)
         {
             Visual* visual = factory->create(m_parentWidget);

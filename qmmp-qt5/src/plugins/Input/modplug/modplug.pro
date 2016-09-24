@@ -1,30 +1,28 @@
 include(../../plugins.pri)
 
 HEADERS += decodermodplugfactory.h \
-    decoder_modplug.h \
-    archivereader.h \
-    modplugmetadatamodel.h
-
-
+           decoder_modplug.h \
+           archivereader.h \
+           modplugmetadatamodel.h
+    
 SOURCES += decoder_modplug.cpp \
-    decodermodplugfactory.cpp \
-    archivereader.cpp \
-    modplugmetadatamodel.cpp
-
-
+           decodermodplugfactory.cpp \
+           archivereader.cpp \
+           modplugmetadatamodel.cpp
+    
 TARGET = $$PLUGINS_PREFIX/Input/modplug
 
 DEFINES += HAVE_STDINT_H \
-    HAVE_INTTYPES_H
-
+           HAVE_INTTYPES_H
+           
 INCLUDEPATH += ../../../ \
-                    $$EXTRA_PREFIX/libmodplug/include
+               $$EXTRA_PREFIX/libmodplug/include
 
 CONFIG += warn_on \
-    plugin \
-    link_pkgconfig
+          plugin \
+          link_pkgconfig
+    
 TEMPLATE = lib
-QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
@@ -40,6 +38,5 @@ win32 {
                ../../../../src/qmmp/decoderfactory.h
     QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libmodplug/lib -lmodplug -lqmmp1
-#    LIBS += -lqmmp0 -lmodplug
     DEFINES -= UNICODE
 }

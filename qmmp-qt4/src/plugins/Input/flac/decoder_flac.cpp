@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006-2014 by Ilya Kotov                                 *
+ *   Copyright (C) 2006-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -84,7 +84,7 @@ static size_t pack_pcm_signed (FLAC__byte *output,
      return samples * channels * bps / 8;
 }
 
-static int flac_decode (void *void_data, char *buf, int buf_len)
+static int flac_decode (void *void_data, unsigned char *buf, int buf_len)
 {
     DecoderFLAC *dflac = (DecoderFLAC *) void_data;
     unsigned to_copy;
@@ -268,7 +268,7 @@ bool DecoderFLAC::initialize()
             QString p = m_path;
             p.remove("flac://");
             p.remove(QRegExp("#\\d+$"));
-            TagLib::FLAC::File fileRef(p.toLocal8Bit().constData());
+            TagLib::FLAC::File fileRef(QStringToFileName(p));
             //looking for cuesheet comment
             TagLib::Ogg::XiphComment *xiph_comment = fileRef.xiphComment();
 
@@ -460,7 +460,7 @@ void DecoderFLAC::seek(qint64 time)
 
 }
 
-qint64 DecoderFLAC::read(char *data, qint64 size)
+qint64 DecoderFLAC::read(unsigned char *data, qint64 size)
 {
     if(m_parser)
     {

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -68,7 +68,12 @@ bool DecoderWavPack::initialize()
         QString p = m_path;
         p.remove("wvpack://");
         p.remove(QRegExp("#\\d+$"));
+#if defined(Q_OS_WIN) && defined(OPEN_FILE_UTF8)
+        m_context = WavpackOpenFileInput (p.toUtf8().constData(),
+                                          err, OPEN_WVC | OPEN_TAGS | OPEN_FILE_UTF8, 0);
+#else
         m_context = WavpackOpenFileInput (p.toLocal8Bit().constData(), err, OPEN_WVC | OPEN_TAGS, 0);
+#endif
         if (!m_context)
         {
             qWarning("DecoderWavPack: error: %s", err);
@@ -94,7 +99,12 @@ bool DecoderWavPack::initialize()
         }
     }
     else
-        m_context = WavpackOpenFileInput (m_path.toLocal8Bit(), err, OPEN_WVC | OPEN_TAGS, 0);
+#if defined(Q_OS_WIN) && defined(OPEN_FILE_UTF8)
+        m_context = WavpackOpenFileInput (m_path.toUtf8().constData(),
+                                          err, OPEN_WVC | OPEN_TAGS | OPEN_FILE_UTF8, 0);
+#else
+        m_context = WavpackOpenFileInput (m_path.toLocal8Bit().constData(), err, OPEN_WVC | OPEN_TAGS, 0);
+#endif
 
     if (!m_context)
     {
@@ -180,7 +190,7 @@ void DecoderWavPack::seek(qint64 time)
     WavpackSeekSample (m_context, time * audioParameters().sampleRate() / 1000);
 }
 
-qint64 DecoderWavPack::read(char *data, qint64 size)
+qint64 DecoderWavPack::read(unsigned char *data, qint64 size)
 {
     if(m_parser)
     {
@@ -220,7 +230,7 @@ void DecoderWavPack::next()
     }
 }
 
-qint64 DecoderWavPack::wavpack_decode(char *data, qint64 size)
+qint64 DecoderWavPack::wavpack_decode(unsigned char *data, qint64 size)
 {
     ulong len = qMin(QMMP_BLOCK_FRAMES, (int)size / m_chan / 4);
     len = WavpackUnpackSamples (m_context, m_output_buf, len);

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008-2015 by Ilya Kotov                                 *
+ *   Copyright (C) 2008-2016 by Ilya Kotov                                 *
  *   forkotov02@hotmail.ru                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,8 +18,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <QtGui>
 #include <QSettings>
+#include <QtPlugin>
 
 extern "C"{
 #include <libavformat/avformat.h>
@@ -77,6 +77,10 @@ bool DecoderFFmpegFactory::canDecode(QIODevice *i) const
     else if(filters.contains("*.mka") && !memcmp(fmt->name, "mka", 3))
         return true;
     else if(filters.contains("*.vqf") && !memcmp(fmt->name, "vqf", 3))
+        return true;
+    else if(filters.contains("*.ape") && !memcmp(fmt->name, "ape", 3))
+        return true;
+    else if(filters.contains("*.tta") && !memcmp(fmt->name, "tta", 3))
         return true;
     return false;
 }
@@ -195,6 +199,5 @@ MetaDataModel* DecoderFFmpegFactory::createMetaDataModel(const QString &path, QO
 {
     return new FFmpegMetaDataModel(path,parent);
 }
-
 
 Q_EXPORT_PLUGIN2(ffmpeg_legacy,DecoderFFmpegFactory)

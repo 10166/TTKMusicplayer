@@ -12,9 +12,6 @@
 #include <QObject>
 #include <QIODevice>
 #include "decoder_vorbis.h"
-#ifdef Q_CC_MSVC
-#define strncasecmp _strnicmp
-#endif
 
 // ic functions for OggVorbis
 static size_t oggread (void *buf, size_t size, size_t nmemb, void *src)
@@ -74,9 +71,8 @@ static long oggtell(void *src)
 DecoderVorbis::DecoderVorbis(const QString &url, QIODevice *i)
         : Decoder(i)
 {
-    inited = false;
+    m_inited = false;
     m_totalTime = 0;
-    m_section = 0;
     m_last_section = -1;
     m_bitrate = 0;
     m_url = url;
@@ -91,22 +87,12 @@ DecoderVorbis::~DecoderVorbis()
 bool DecoderVorbis::initialize()
 {
     qDebug("DecoderVorbis: initialize");
-    inited = false;
+    m_inited = false;
     m_totalTime = 0;
     if (!input())
     {
         qDebug("DecoderVorbis: cannot initialize.  No input");
         return false;
-    }
-
-    if (!input()->isOpen())
-    {
-        if (!input()->open(QIODevice::ReadOnly))
-        {
-            qWarning("%s",qPrintable("DecoderVorbis: failed to open input. " +
-                                input()->errorString () + "."));
-            return false;
-        }
     }
 
     ov_callbacks oggcb =
@@ -143,15 +129,15 @@ bool DecoderVorbis::initialize()
         qWarning("DecoderVorbis: unsupported number of channels: %d", chan);
         return false;
     }
-    configure(freq, chmap, Qmmp::PCM_S16LE);
-    inited = true;
+    configure(freq, chmap, Qmmp::PCM_FLOAT);
+    m_inited = true;
     return true;
 }
 
 
 qint64 DecoderVorbis::totalTime()
 {
-    if (!inited)
+    if (!m_inited)
         return 0;
     return m_totalTime;
 }
@@ -164,7 +150,7 @@ int DecoderVorbis::bitrate()
 
 void DecoderVorbis::deinit()
 {
-    if (inited)
+    if (m_inited)
         ov_clear(&oggfile);
     len = 0;
 }
@@ -296,26 +282,13 @@ void DecoderVorbis::seek(qint64 time)
     ov_time_seek(&oggfile, (double) time/1000);
 }
 
-qint64 DecoderVorbis::read(char *data, qint64 maxSize)
-{
-    len = -1;
-    while (len < 0)
-        len = ov_read(&oggfile, data, maxSize, 0, 2, 1, &m_section);
-
-    if (m_section != m_last_section)
-        updateTags();
-    m_last_section = m_section;
-    if(len > 0)
-        m_bitrate = ov_bitrate_instant(&oggfile) / 1000;
-    return len;
-}
-
-qint64 DecoderVorbis::read(float *data, qint64 samples)
+qint64 DecoderVorbis::read(unsigned char *data, qint64 maxSize)
 {
     len = -1;
     float **pcm = 0;
+    int section = 0;
     while (len < 0)
-        len = ov_read_float(&oggfile, &pcm, samples, &m_section);
+        len = ov_read_float(&oggfile, &pcm, maxSize/sizeof(float), &section);
 
     if(len == 0)
         return 0;
@@ -324,7 +297,7 @@ qint64 DecoderVorbis::read(float *data, qint64 samples)
 
     for(int i = 0; i < channels; ++i)
     {
-        float *ptr = &data[i];
+        float *ptr = (float *) (data + i*sizeof(float));
         for(int j = 0; j < len; ++j)
         {
             *ptr = pcm[i][j];
@@ -332,10 +305,12 @@ qint64 DecoderVorbis::read(float *data, qint64 samples)
         }
     }
 
-    if (m_section != m_last_section)
+    if (section != m_last_section)
+    {
         updateTags();
-    m_last_section = m_section;
+        m_last_section = section;
+    }
 
     m_bitrate = ov_bitrate_instant(&oggfile) / 1000;
-    return len*channels;
+    return len*sizeof(float)*channels;
 }

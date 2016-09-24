@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
+    <width>383</width>
     <height>123</height>
    </rect>
   </property>
@@ -29,7 +29,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Crossfeed等级</string>
+      <string>Crossfeed level</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
@@ -68,7 +68,7 @@
      <item>
       <widget class="QPushButton" name="defaultButton">
        <property name="text">
-        <string>默认</string>
+        <string>Default</string>
        </property>
       </widget>
      </item>

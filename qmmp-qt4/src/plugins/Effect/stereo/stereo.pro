@@ -11,23 +11,15 @@ SOURCES += stereoplugin.cpp \
 TARGET =$$PLUGINS_PREFIX/Effect/stereo
 
 INCLUDEPATH += ../../../
+
 CONFIG += warn_on \
-plugin
+          plugin
 
 TEMPLATE = lib
-QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
-
 
 FORMS += settingsdialog.ui
 
-unix {
-    isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Effect
-    INSTALLS += target
-
-    LIBS += -lqmmp -L/usr/lib -I/usr/include
-    QMAKE_CLEAN =$$PLUGINS_PREFIX/Effect/libstereo.so
-}
+QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
 
 win32 {
     QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
