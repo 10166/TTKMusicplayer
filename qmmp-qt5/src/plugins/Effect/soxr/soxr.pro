@@ -25,7 +25,6 @@ unix {
     target.path = $$LIB_DIR/qmmp/Effect
     INSTALLS += target
     CONFIG += link_pkgconfig
-    PKGCONFIG += soxr
     LIBS += -lqmmp -L/usr/lib -I/usr/include
 }
 

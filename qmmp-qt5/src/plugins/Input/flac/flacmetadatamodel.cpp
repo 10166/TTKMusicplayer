@@ -183,7 +183,7 @@ void VorbisCommentModel::setValue(Qmmp::MetaData key, const QString &value)
     if(!m_tag)
         return;
 
-    TagLib::String str = QStringToTString(value);
+    TagLib::String str = TagLib::String(value.toUtf8().data(), TagLib::String::UTF8);
 
     switch((int) key)
     {

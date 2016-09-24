@@ -173,7 +173,7 @@ void VorbisCommentModel::setValue(Qmmp::MetaData key, const QString &value)
 
     TagLib::Ogg::XiphComment *tag = m_model->m_tag;
 
-    TagLib::String str = QStringToTString(value);
+    TagLib::String str = TagLib::String(value.toUtf8().data(), TagLib::String::UTF8);
 
     switch((int) key)
     {

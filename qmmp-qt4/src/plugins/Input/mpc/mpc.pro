@@ -22,6 +22,7 @@ TEMPLATE = lib
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
+    QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
     DEFINES += MPC_OLD_API

@@ -20,7 +20,6 @@ CONFIG += warn_on \
 
 TEMPLATE = lib
 LIBS += -L$$EXTRA_PREFIX/libalsa/lib -lasound -lqmmp
-PKGCONFIG += alsa
 
 isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
 target.path = $$LIB_DIR/qmmp/Output

@@ -26,7 +26,6 @@ QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
 QT += opengl
 
 unix {
-  PKGCONFIG += libprojectM
   isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
   target.path = $$LIB_DIR/qmmp/Visual
   INSTALLS += target
@@ -46,4 +45,3 @@ win32 {
     QMAKE_LIBDIR += ../../../../bin/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libprojectM/lib -lglew32 -lopengl32 -lprojectM.dll -lqmmp1
 }
-

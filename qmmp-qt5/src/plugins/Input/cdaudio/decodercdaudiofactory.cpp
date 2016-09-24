@@ -21,10 +21,8 @@
 #include <QRegExp>
 #include <cdio/version.h>
 #include <cddb/version.h>
-#include "settingsdialog.h"
 #include "decoder_cdaudio.h"
 #include "decodercdaudiofactory.h"
-
 
 // DecoderCDAudioFactory
 

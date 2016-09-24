@@ -40,7 +40,6 @@ win32{
 contains(CONFIG, WITH_ENCA){
    CONFIG += link_pkgconfig
    DEFINES += WITH_ENCA
-   unix:PKGCONFIG += enca
    win32:LIBS += -L$$EXTRA_PREFIX/libenca/lib -lenca
 
 }

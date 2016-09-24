@@ -26,12 +26,11 @@ TEMPLATE = lib
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    QMAKE_LIBDIR += ../../../../lib
+    QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     target.path = $$LIB_DIR/qmmp/Input
     INSTALLS += target
     LIBS += -L$$EXTRA_PREFIX/libflac/lib -lFLAC \
-            -L$$EXTRA_PREFIX/libtaglib/lib -ltag \
-            -lqmmp
+            -L$$EXTRA_PREFIX/libtaglib/lib -ltag -lqmmp
     QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libflac.so
 }
 
