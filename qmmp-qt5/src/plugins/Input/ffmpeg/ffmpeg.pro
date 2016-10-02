@@ -19,13 +19,22 @@ CONFIG += warn_on \
           
 TEMPLATE = lib
 
-TARGET = $$PLUGINS_PREFIX/Input/ffmpeg
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_ffmpeg
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/ffmpeg
+}
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_ffmpeg.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libffmpeg.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
     INSTALLS += target
-    QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libffmpeg.so
     LIBS += -L$$EXTRA_PREFIX/libav/lib -lavcodec -lavformat -lavutil -lqmmp
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
 }

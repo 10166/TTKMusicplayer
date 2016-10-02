@@ -5,7 +5,6 @@
 #include "../qmmp/visual.h"
 
 #include <QSlider>
-#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,22 +26,24 @@ MainWindow::MainWindow(QWidget *parent) :
         slider->setRange(-20, 20);
         slider->setTickPosition(QSlider::TicksLeft);
         slider->setTickInterval(10);
-        connect(slider, SIGNAL(valueChanged(int)), SLOT(applySettings()));
 
         m_sliders << slider;
         ui->equalizerLayout->addWidget(slider);
     }
 
     MusicPlaylist *list = new MusicPlaylist(this);
-#ifdef Q_OS_UNIX
-    list->appendMedia("/home/greedysky/qmmp_all/1.opus");
-#else
-    list->appendMedia("D:/Workspace/qmmp_all/1.flac");
-#endif
-    m_sound->setPlaylist(list);
 
-//    Visual::initialize(this);
-//    Visual::setEnabled(Visual::factories().last());
+#ifdef Q_OS_UNIX
+  #ifdef Q_OS_ANDROID
+    list->appendMedia("/storage/emulated/0/QMMP/1.opus");
+  #else
+    list->appendMedia("/home/greedysky/qmmp_all/1.opus");
+  #endif
+#elif defined Q_OS_WIN
+    list->appendMedia("D:/Qt/Workspace/qmmp_all/1.flac");
+#endif
+
+    m_sound->setPlaylist(list);
 }
 
 MainWindow::~MainWindow()
@@ -66,17 +67,4 @@ void MainWindow::setTimeValue(qint64 value)
 {
     ui->timeSlider->setRange(0, m_sound->duration());
     ui->timeSlider->setValue(value);
-}
-
-void MainWindow::applySettings()
-{
-//    EqSettings settings(EqSettings::EQ_BANDS_10);
-//    settings.setPreamp(m_sliders[0]->value());
-//    settings.setEnabled(true);
-
-//    for(int i = 0; i < EqSettings::EQ_BANDS_10; ++i)
-//    {
-//        settings.setGain(i, m_sliders[i+1]->value());
-//    }
-//    m_sound->setEqSettings(settings);
 }

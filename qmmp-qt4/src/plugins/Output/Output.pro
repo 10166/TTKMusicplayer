@@ -12,9 +12,3 @@ unix{
       SUBDIRS += alsa
   }
 }
-
-#qtHaveModule(multimedia){
-#  contains(CONFIG, QTMULTIMEDIA_PLUGIN){
-#     SUBDIRS += qtmultimedia
-#  }
-#}

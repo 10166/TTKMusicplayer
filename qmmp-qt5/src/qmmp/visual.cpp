@@ -184,11 +184,19 @@ void Visual::checkFactories()
         m_files = new QHash <VisualFactory*, QString>;
 
         QDir pluginsDir (Qmmp::pluginsPath());
+#ifndef Q_OS_ANDROID
         pluginsDir.cd("Visual");
+#endif
         QStringList filters;
         filters << "*.dll" << "*.so";
         foreach (QString fileName, pluginsDir.entryList(filters, QDir::Files))
         {
+#ifdef Q_OS_ANDROID
+            if(!fileName.contains("_visual_"))
+            {
+                continue;
+            }
+#endif
             QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
             QObject *plugin = loader.instance();
             if (loader.isLoaded())

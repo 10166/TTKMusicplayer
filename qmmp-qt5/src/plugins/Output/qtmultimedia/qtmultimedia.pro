@@ -8,7 +8,11 @@ HEADERS += outputqtmultimediafactory.h \
 SOURCES += outputqtmultimediafactory.cpp \
            outputqtmultimedia.cpp
 
-TARGET=$$PLUGINS_PREFIX/Output/qtmultimedia
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_output_qtmultimedia
+}else{
+    TARGET = $$PLUGINS_PREFIX/Output/qtmultimedia
+}
 
 INCLUDEPATH += ../../../
 QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
@@ -21,10 +25,15 @@ TEMPLATE = lib
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Output
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../plugin_output_libqtmultimedia.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Output/libqtmultimedia.so
+        target.path = $$LIB_DIR/qmmp/Output
+    }
     INSTALLS += target
     LIBS += -lqmmp
-    QMAKE_CLEAN =$$PLUGINS_PREFIX/Output/libqtmultimedia.so
 }
 
 win32 {

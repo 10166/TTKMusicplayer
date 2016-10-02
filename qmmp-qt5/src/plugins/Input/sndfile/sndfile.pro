@@ -6,8 +6,11 @@ HEADERS += decodersndfilefactory.h \
 SOURCES += decoder_sndfile.cpp \
            decodersndfilefactory.cpp
 
-TARGET=$$PLUGINS_PREFIX/Input/sndfile
-
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_sndfile
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/sndfile
+}
 
 INCLUDEPATH += ../../../ \
                $$EXTRA_PREFIX/libsndfile/include \
@@ -24,7 +27,13 @@ TEMPLATE = lib
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_sndfile.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libsndfile.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
     INSTALLS += target
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libsndfile/lib -lsndfile \
@@ -32,7 +41,6 @@ unix {
             -L$$EXTRA_PREFIX/libvorbis/lib -lvorbisenc -lvorbis \
             -L$$EXTRA_PREFIX/libogg/lib -logg \
             -lqmmp
-    QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libsndfile.so
 }
 
 win32 {

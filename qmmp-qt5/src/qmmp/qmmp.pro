@@ -142,7 +142,12 @@ win32:{
 }
 
 unix {
-    LIBS += -L../../../extra/gcc/libtaglib/lib -ltag
+    unix:android{
+        INCLUDEPATH += ../../../extra/android/libtaglib/include
+        LIBS += -L../../../extra/android/libtaglib/lib -ltag
+    }else{
+        LIBS += -L../../../extra/gcc/libtaglib/lib -ltag
+    }
     CONFIG += create_pc create_prl no_install_prl
     QMAKE_PKGCONFIG_NAME = qmmp
     QMAKE_PKGCONFIG_DESCRIPTION = qmmp core library

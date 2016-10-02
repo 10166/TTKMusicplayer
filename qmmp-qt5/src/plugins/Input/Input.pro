@@ -7,12 +7,12 @@ contains(CONFIG, FLAC_PLUGIN){
     SUBDIRS += flac
 }
 
-contains(CONFIG, MUSEPACK_PLUGIN){
-    SUBDIRS += mpc
-}
-
 contains(CONFIG, MODPLUG_PLUGIN){
     SUBDIRS += modplug
+}
+
+contains(CONFIG, MUSEPACK_PLUGIN){
+    SUBDIRS += mpc
 }
 
 contains(CONFIG, FFMPEG_PLUGIN){
@@ -23,11 +23,7 @@ contains(CONFIG, GME_PLUGIN){
     SUBDIRS += gme
 }
 
-contains(CONFIG, OPUS_PLUGIN){
-    SUBDIRS += opus
-}
-
-unix{
+unix:!android{
     contains(CONFIG, CDAUDIO_PLUGIN){
         SUBDIRS += cdaudio
     }
@@ -37,8 +33,14 @@ unix{
     }
 }
 
-contains(CONFIG, WILDMIDI_PLUGIN){
-    SUBDIRS += wildmidi
+!android{
+    contains(CONFIG, WILDMIDI_PLUGIN){
+        SUBDIRS += wildmidi
+    }
+}
+
+contains(CONFIG, OPUS_PLUGIN){
+    SUBDIRS += opus
 }
 
 contains(CONFIG, AAC_PLUGIN){

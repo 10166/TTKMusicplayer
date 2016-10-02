@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS += Effect \
-           Input \
-           Output \
-           Visual
+!unix:android {
+    SUBDIRS += Effect Visual
+}
+SUBDIRS += Input Output

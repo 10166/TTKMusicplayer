@@ -10,7 +10,11 @@ SOURCES += decoder_modplug.cpp \
            archivereader.cpp \
            modplugmetadatamodel.cpp
     
-TARGET = $$PLUGINS_PREFIX/Input/modplug
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_modplug
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/modplug
+}
 
 DEFINES += HAVE_STDINT_H \
            HAVE_INTTYPES_H
@@ -26,11 +30,16 @@ TEMPLATE = lib
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_modplug.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libmodplug.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
     INSTALLS += target
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libmodplug/lib -lmodplug -lqmmp
-    QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libmodplug.so
 }
 
 win32 {

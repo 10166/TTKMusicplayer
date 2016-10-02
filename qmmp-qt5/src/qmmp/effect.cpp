@@ -86,11 +86,19 @@ void Effect::loadPlugins()
     m_cache = new QList<QmmpPluginCache *>;
     QSettings settings (Qmmp::configFile(), QSettings::IniFormat);
     QDir pluginsDir (Qmmp::pluginsPath());
+#ifndef Q_OS_ANDROID
     pluginsDir.cd("Effect");
+#endif
     QStringList filters;
     filters << "*.dll" << "*.so";
     foreach (QString fileName, pluginsDir.entryList(filters, QDir::Files))
     {
+#ifdef Q_OS_ANDROID
+        if(!fileName.contains("_effect_"))
+        {
+            continue;
+        }
+#endif
         QmmpPluginCache *item = new QmmpPluginCache(pluginsDir.absoluteFilePath(fileName), &settings);
         if(item->hasError())
         {

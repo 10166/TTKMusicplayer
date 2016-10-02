@@ -12,7 +12,11 @@ SOURCES += decoder_flac.cpp \
            flacmetadatamodel.cpp \
            replaygainreader.cpp
     
-TARGET = $$PLUGINS_PREFIX/Input/flac
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_flac
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/flac
+}
 
 INCLUDEPATH += ../../../ \
                $$EXTRA_PREFIX/libtaglib/include \
@@ -27,11 +31,17 @@ TEMPLATE = lib
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_flac.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libflac.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
     INSTALLS += target
     LIBS += -L$$EXTRA_PREFIX/libflac/lib -lFLAC \
-            -L$$EXTRA_PREFIX/libtaglib/lib -ltag -lqmmp
-    QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libflac.so
+            -L$$EXTRA_PREFIX/libtaglib/lib -ltag \
+            -L$$EXTRA_PREFIX/libogg/lib -logg -lqmmp
 }
 
 win32 {

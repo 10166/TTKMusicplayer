@@ -12,7 +12,11 @@ SOURCES += decoder_wavpack.cpp \
            wavpackmetadatamodel.cpp \
            replaygainreader.cpp
     
-TARGET = $$PLUGINS_PREFIX/Input/wavpack
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_wavpack
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/wavpack
+}
 
 INCLUDEPATH += ../../../ \
                $$EXTRA_PREFIX/libwavpack/include
@@ -25,11 +29,16 @@ TEMPLATE = lib
 
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_wavpack.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libwavpack.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
     INSTALLS += target
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libwavpack/lib -lwavpack -lqmmp
-    QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libwavpack.so
 }
 
 win32 {

@@ -7,9 +7,12 @@ HEADERS += decodergmefactory.h \
 SOURCES += decoder_gme.cpp \
            decodergmefactory.cpp \
            gmehelper.cpp
-    
-TARGET = $$PLUGINS_PREFIX/Input/gme
-QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libgme.so
+
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_gme
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/gme
+}
 
 INCLUDEPATH += ../../../ \
                $$EXTRA_PREFIX/libgme/include
@@ -21,7 +24,13 @@ TEMPLATE = lib
 
 unix{
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_gme.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libgme.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
     INSTALLS += target
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
     LIBS += -L$$EXTRA_PREFIX/libgme/lib -lgme -lqmmp

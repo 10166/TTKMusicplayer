@@ -10,7 +10,11 @@ SOURCES += decoder_vorbis.cpp \
            vorbismetadatamodel.cpp \
            replaygainreader.cpp
     
-TARGET = $$PLUGINS_PREFIX/Input/vorbis
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_vorbis
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/vorbis
+}
 
 INCLUDEPATH += ../../../ \
                $$EXTRA_PREFIX/libtaglib/include \
@@ -26,12 +30,17 @@ TEMPLATE = lib
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_vorbis.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libvorbis.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
     INSTALLS += target
     LIBS += -L$$EXTRA_PREFIX/libvorbis/lib -lvorbisfile -lvorbis \
             -L$$EXTRA_PREFIX/libogg/lib -logg \
             -L$$EXTRA_PREFIX/libtaglib/lib -ltag -lqmmp
-    QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libvorbis.so
 }
 
 win32 {

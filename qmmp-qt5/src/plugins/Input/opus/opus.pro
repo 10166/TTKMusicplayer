@@ -10,7 +10,11 @@ SOURCES += decoder_opus.cpp \
            opusmetadatamodel.cpp \
            replaygainreader.cpp
     
-TARGET = $$PLUGINS_PREFIX/Input/opus
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_opus
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/opus
+}
 
 INCLUDEPATH += ../../../ \
                $$EXTRA_PREFIX/libopusfile/include \
@@ -26,11 +30,17 @@ TEMPLATE = lib
 unix {
     isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
-    target.path = $$LIB_DIR/qmmp/Input
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_opus.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libopus.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
     INSTALLS += target
     LIBS += -L$$EXTRA_PREFIX/libopusfile/lib -lopusfile -lopus \
-            -L$$EXTRA_PREFIX/libtaglib/lib -ltag -lqmmp
-    QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libopus.so
+            -L$$EXTRA_PREFIX/libtaglib/lib -ltag \
+            -L$$EXTRA_PREFIX/libogg/lib -logg -lqmmp
 }
 
 

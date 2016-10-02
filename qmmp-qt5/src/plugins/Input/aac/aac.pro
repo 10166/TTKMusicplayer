@@ -9,9 +9,12 @@ SOURCES += decoder_aac.cpp \
            decoderaacfactory.cpp \
            aacfile.cpp \
            aacmetadatamodel.cpp
-    
-TARGET = $$PLUGINS_PREFIX/Input/aac
-QMAKE_CLEAN = $$PLUGINS_PREFIX/Input/libaac.so
+
+unix:android {
+    TARGET = $$PLUGINS_PREFIX/../plugin_input_aac
+}else{
+    TARGET = $$PLUGINS_PREFIX/Input/aac
+}
 
 INCLUDEPATH += ../../../ \
                $$EXTRA_PREFIX/libfaad2/include \
@@ -30,13 +33,18 @@ win32:{
               -L$$EXTRA_PREFIX/libtaglib/lib -ltag.dll -lqmmp1
     }
 }
+
 unix:{
+    isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
     QMAKE_LIBDIR += ../../../../lib/$$TTKMusicPlayer
+    unix:android {
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/../libplugin_input_aac.so
+        target.path = $$LIB_DIR
+    }else{
+        QMAKE_CLEAN =$$PLUGINS_PREFIX/Input/libaac.so
+        target.path = $$LIB_DIR/qmmp/Input
+    }
+    INSTALLS += target
     LIBS += -L$$EXTRA_PREFIX/libfaad2/lib -lfaad \
             -L$$EXTRA_PREFIX/libtaglib/lib -ltag -lqmmp
 }
-
-isEmpty(LIB_DIR):LIB_DIR = /lib/$$TTKMusicPlayer
-target.path = $$LIB_DIR/qmmp/Input
-INSTALLS += target
-
