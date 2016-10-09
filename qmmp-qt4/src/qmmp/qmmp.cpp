@@ -26,7 +26,7 @@
 #include <QByteArray>
 
 #ifndef LIB_DIR
-#define LIB_DIR "/lib/2.4.0.0"
+#define LIB_DIR "/lib/2.4.1.0"
 #endif
 
 #define DEV_SUFFIX "dev"
